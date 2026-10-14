@@ -104,6 +104,18 @@ jobs:
           # action still asks for it by default, which fails the whole setup step.
           packages: 'platform-tools'
 
+      # Kevin's copy: this app's main branch needs shared-code changes newer than the last published
+      # core release, so the shared code is built from source at a fixed commit (the same way the
+      # author builds locally). Change CORE_SHA to move to newer shared code.
+      - name: Fetch the shared core code
+        env:
+          CORE_SHA: 320e3598e982aa5d1bf7c6d7fa6e015875050e2a
+        run: |
+          git init -q "$RUNNER_TEMP/OwnTV_Core"
+          git -C "$RUNNER_TEMP/OwnTV_Core" fetch -q --depth 1 https://github.com/ahXN00/OwnTV_Core "$CORE_SHA"
+          git -C "$RUNNER_TEMP/OwnTV_Core" checkout -q FETCH_HEAD
+          printf '\nowntv.corePath=%s\n' "$RUNNER_TEMP/OwnTV_Core" >> gradle.properties
+
       - name: Set up Gradle
         uses: gradle/actions/setup-gradle@v6
 
@@ -156,6 +168,18 @@ jobs:
           # 'tools' is obsolete and Google removed it from the SDK repository; the
           # action still asks for it by default, which fails the whole setup step.
           packages: 'platform-tools'
+
+      # Kevin's copy: this app's main branch needs shared-code changes newer than the last published
+      # core release, so the shared code is built from source at a fixed commit (the same way the
+      # author builds locally). Change CORE_SHA to move to newer shared code.
+      - name: Fetch the shared core code
+        env:
+          CORE_SHA: 320e3598e982aa5d1bf7c6d7fa6e015875050e2a
+        run: |
+          git init -q "$RUNNER_TEMP/OwnTV_Core"
+          git -C "$RUNNER_TEMP/OwnTV_Core" fetch -q --depth 1 https://github.com/ahXN00/OwnTV_Core "$CORE_SHA"
+          git -C "$RUNNER_TEMP/OwnTV_Core" checkout -q FETCH_HEAD
+          printf '\nowntv.corePath=%s\n' "$RUNNER_TEMP/OwnTV_Core" >> gradle.properties
 
       - name: Set up Gradle
         uses: gradle/actions/setup-gradle@v6
