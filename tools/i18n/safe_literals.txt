@@ -25,8 +25,8 @@
 1	protocol	app/src/main/java/tv/own/owntv/mobile/MainActivity.kt	pip_action
 1	protocol	app/src/main/java/tv/own/owntv/mobile/MainActivity.kt	toggle
 1	protocol	app/src/main/java/tv/own/owntv/mobile/MainActivity.kt	tv.own.owntv.mobile.PIP
-1	technical	app/src/main/java/tv/own/owntv/mobile/OwnTVMobileApp.kt	kevinquinnart-bit/OwnTV_Mobile
 1	technical	app/src/main/java/tv/own/owntv/mobile/OwnTVMobileApp.kt	image_cache
+1	technical	app/src/main/java/tv/own/owntv/mobile/OwnTVMobileApp.kt	kevinquinnart-bit/OwnTV_Mobile
 1	protocol	app/src/main/java/tv/own/owntv/mobile/cast/CastPlaybackEngine.kt	CAST
 1	file-path	app/src/main/java/tv/own/owntv/mobile/cast/CastRequest.kt	.aac
 1	file-path	app/src/main/java/tv/own/owntv/mobile/cast/CastRequest.kt	.m3u8
@@ -297,7 +297,10 @@
 1	log	app/src/main/java/tv/own/owntv/mobile/ui/screens/settings/EpgSourcesViewModel.kt	manual_resync
 1	log	app/src/main/java/tv/own/owntv/mobile/ui/screens/settings/EpgSourcesViewModel.kt	update
 1	log	app/src/main/java/tv/own/owntv/mobile/ui/screens/settings/LocalSyncViewModel.kt	Local sync failed: $reason
+1	log	app/src/main/java/tv/own/owntv/mobile/ui/screens/settings/LocalSyncViewModel.kt	LocalSync
 1	log	app/src/main/java/tv/own/owntv/mobile/ui/screens/settings/LocalSyncViewModel.kt	LocalSyncViewModel
+1	technical	app/src/main/java/tv/own/owntv/mobile/ui/screens/settings/LocalSyncViewModel.kt	local_sync
+1	log	app/src/main/java/tv/own/owntv/mobile/ui/screens/settings/LocalSyncViewModel.kt	post-sync download not started: ${it.message}
 1	technical	app/src/main/java/tv/own/owntv/mobile/ui/screens/settings/NavigationSheet.kt	·
 1	technical	app/src/main/java/tv/own/owntv/mobile/ui/screens/settings/NetworkTest.kt	Network is unreachable
 2	protocol	app/src/main/java/tv/own/owntv/mobile/ui/screens/settings/NetworkTest.kt	Proxy-Authorization

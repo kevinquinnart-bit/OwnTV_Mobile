@@ -30,7 +30,7 @@ val shellModule = module {
         tv.own.owntv.mobile.ui.screens.MoreCountsViewModel(get(), get(), get(), get(), get(), get(), get(), get(), get(), get(), get(), get(), get())
     }
     viewModel { BackupViewModel(get(), get(), androidContext(), get(), get(), get()) }
-    viewModel { tv.own.owntv.mobile.ui.screens.settings.LocalSyncViewModel(get()) }
+    viewModel { tv.own.owntv.mobile.ui.screens.settings.LocalSyncViewModel(get(), get(), get(), get(), get(), get()) }
     // An import has to outlive the wizard screen that started it — "Run in background" is exactly
     // that promise — so it runs here rather than in a ViewModel that dies with its navigation entry.
     single<CoroutineScope> { CoroutineScope(SupervisorJob() + Dispatchers.Default) }
