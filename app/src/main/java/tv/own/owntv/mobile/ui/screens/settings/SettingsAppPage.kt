@@ -308,7 +308,7 @@ internal fun loggedWhen(atMs: Long): String {
     }
 }
 
-private const val GITHUB_REPO = "github.com/ahXN00/OwnTV"
+private const val GITHUB_REPO = "github.com/kevinquinnart-bit/OwnTV_Mobile"
 private const val GITHUB_NAME = "GitHub"
 private const val TELEGRAM_LINK = "t.me/owntvplayer"
 

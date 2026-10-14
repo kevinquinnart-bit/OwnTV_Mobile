@@ -47,7 +47,9 @@ android {
     }
 
     defaultConfig {
-        applicationId = "tv.own.owntv.mobile"
+        // Kevin's personal copy: its own app ID so it installs next to the official OwnTV Mobile and
+        // keeps its own data. The code namespace stays the same, so nothing else moves.
+        applicationId = "tv.own.owntv.mobile.kevin"
         minSdk = 26
         targetSdk = 36
         // CI injects these from the git tag, exactly as in the TV app. The fallbacks are only used
@@ -104,19 +106,32 @@ android {
     // — a second keystore would only add a second thing to lose. Env vars first (that is how CI
     // injects the GitHub secrets), then user-wide Gradle properties, then the out-of-repo file.
     // Nothing configured (a fork, a fresh clone) still builds; the APK is just unsigned.
+    // Blank counts as unset: GitHub hands an unset secret to the build as an empty string.
     fun signingValue(env: String, property: String): String? =
-        System.getenv(env)
-            ?: providers.gradleProperty(property).orNull
-            ?: localSigningProps.getProperty(property)
+        System.getenv(env)?.takeIf { it.isNotBlank() }
+            ?: providers.gradleProperty(property).orNull?.takeIf { it.isNotBlank() }
+            ?: localSigningProps.getProperty(property)?.takeIf { it.isNotBlank() }
 
+    // Kevin's copy: when no other key is configured, sign with the fixed key kept in app/signing/.
+    // The same key on every build means each new APK installs over the last one and keeps the
+    // user's playlists and settings.
+    val kevinKeystore = file("signing/kevin-release.keystore")
     val releaseKeystore = signingValue("KEYSTORE_FILE", "owntv.keystoreFile")
+        ?: kevinKeystore.takeIf { it.isFile }?.absolutePath
+    val usingKevinKey = releaseKeystore == kevinKeystore.absolutePath
     signingConfigs {
         if (releaseKeystore != null) {
             create("release") {
                 storeFile = file(releaseKeystore)
-                storePassword = signingValue("KEYSTORE_PASSWORD", "owntv.keystorePassword")
-                keyAlias = signingValue("KEY_ALIAS", "owntv.keyAlias")
-                keyPassword = signingValue("KEY_PASSWORD", "owntv.keyPassword")
+                if (usingKevinKey) {
+                    storePassword = "owntvkevin"
+                    keyAlias = "kevin"
+                    keyPassword = "owntvkevin"
+                } else {
+                    storePassword = signingValue("KEYSTORE_PASSWORD", "owntv.keystorePassword")
+                    keyAlias = signingValue("KEY_ALIAS", "owntv.keyAlias")
+                    keyPassword = signingValue("KEY_PASSWORD", "owntv.keyPassword")
+                }
             }
         }
     }
