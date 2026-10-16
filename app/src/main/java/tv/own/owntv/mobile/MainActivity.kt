@@ -145,6 +145,7 @@ open class MainActivity : FragmentActivity() {
         // active (straight away, or as soon as first-run setup has made one).
         lifecycleScope.launch {
             settings.activeProfileId.first { it >= 0 }
+            applyDefaultPlaylistAutoRefresh(settings, org.koin.core.context.GlobalContext.get().get<tv.own.owntv.core.database.dao.SourceDao>())
             autoRefresh.check(includeStartup = true)
         }
         setContent {
@@ -305,7 +306,10 @@ open class MainActivity : FragmentActivity() {
     override fun onStart() {
         super.onStart()
         // Back in the foreground: interval refreshes only; core throttles a quick in-and-out.
-        lifecycleScope.launch { autoRefresh.check(includeStartup = false) }
+        lifecycleScope.launch {
+            applyDefaultPlaylistAutoRefresh(settings, org.koin.core.context.GlobalContext.get().get<tv.own.owntv.core.database.dao.SourceDao>())
+            autoRefresh.check(includeStartup = false)
+        }
         if (droppedVideoForBackground) {
             droppedVideoForBackground = false
             engine.exitAudioOnly()
