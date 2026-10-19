@@ -147,6 +147,7 @@ open class MainActivity : FragmentActivity() {
             settings.activeProfileId.first { it >= 0 }
             applyDefaultPlaylistAutoRefresh(settings, org.koin.core.context.GlobalContext.get().get<tv.own.owntv.core.database.dao.SourceDao>())
             autoRefresh.check(includeStartup = true)
+            downloadEmptySources()
         }
         setContent {
             tv.own.owntv.mobile.ui.LocalizedContent(localeStore) {

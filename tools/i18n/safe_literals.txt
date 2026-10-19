@@ -19,6 +19,7 @@
 # category protocol: Stable protocol or comparison identifier.
 # category technical: Reviewed non-user-facing technical literal.
 
+1	technical	app/src/main/java/tv/own/owntv/mobile/DefaultAutoRefresh.kt	empty_fill
 1	technical	app/src/main/java/tv/own/owntv/mobile/MainActivity.kt	back
 1	technical	app/src/main/java/tv/own/owntv/mobile/MainActivity.kt	forward
 1	uri	app/src/main/java/tv/own/owntv/mobile/MainActivity.kt	open_player
@@ -297,10 +298,7 @@
 1	log	app/src/main/java/tv/own/owntv/mobile/ui/screens/settings/EpgSourcesViewModel.kt	manual_resync
 1	log	app/src/main/java/tv/own/owntv/mobile/ui/screens/settings/EpgSourcesViewModel.kt	update
 1	log	app/src/main/java/tv/own/owntv/mobile/ui/screens/settings/LocalSyncViewModel.kt	Local sync failed: $reason
-1	log	app/src/main/java/tv/own/owntv/mobile/ui/screens/settings/LocalSyncViewModel.kt	LocalSync
 1	log	app/src/main/java/tv/own/owntv/mobile/ui/screens/settings/LocalSyncViewModel.kt	LocalSyncViewModel
-1	technical	app/src/main/java/tv/own/owntv/mobile/ui/screens/settings/LocalSyncViewModel.kt	local_sync
-1	log	app/src/main/java/tv/own/owntv/mobile/ui/screens/settings/LocalSyncViewModel.kt	post-sync download not started: ${it.message}
 1	technical	app/src/main/java/tv/own/owntv/mobile/ui/screens/settings/NavigationSheet.kt	·
 1	technical	app/src/main/java/tv/own/owntv/mobile/ui/screens/settings/NetworkTest.kt	Network is unreachable
 2	protocol	app/src/main/java/tv/own/owntv/mobile/ui/screens/settings/NetworkTest.kt	Proxy-Authorization
