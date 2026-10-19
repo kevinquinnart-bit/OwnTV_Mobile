@@ -382,7 +382,9 @@ class GuideViewModel(
                         ),
                     ) {
                         livePagingSource(
-                            key = key,
+                            // Kevin's copy: "Favourites" over the whole lineup reads the Favorites list
+                            // itself, so the guide follows your own favourites order, not the provider's.
+                            key = if (sort == SettingsRepository.GuideSort.FAVORITES && key == LiveKey.All) LiveKey.Favorites else key,
                             profileId = c.profileId,
                             sourceIds = c.liveSourceIds,
                             query = q,
