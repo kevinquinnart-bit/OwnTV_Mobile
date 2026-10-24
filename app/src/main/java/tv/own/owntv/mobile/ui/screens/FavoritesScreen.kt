@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -72,6 +73,8 @@ fun FavoritesScreen(
     val lists by vm.favouriteLists.collectAsStateWithLifecycle()
     var filter by rememberSaveable { mutableStateOf(FavFilter.ALL) }
     var menu by remember { mutableStateOf<Triple<MediaType, Long, String>?>(null) }
+    // Kevin's copy: the Clear favourites sheet.
+    var clearing by remember { mutableStateOf(false) }
     val nowMs by rememberClockTick()
 
     val showLive = (filter == FavFilter.ALL || filter == FavFilter.LIVE) && lists.live.isNotEmpty()
@@ -85,7 +88,12 @@ fun FavoritesScreen(
 
     LazyColumn(modifier.fillMaxSize(), contentPadding = PaddingValues(start = 6.dp, end = 6.dp, top = 14.dp, bottom = 24.dp)) {
         item {
-            Row(Modifier.padding(horizontal = 8.dp), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+            Row(Modifier.fillMaxWidth().padding(horizontal = 8.dp), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                // The four filters scroll sideways on a narrow phone, so the bin always keeps its place.
+                Row(
+                    Modifier.weight(1f).horizontalScroll(androidx.compose.foundation.rememberScrollState()),
+                    horizontalArrangement = Arrangement.spacedBy(8.dp),
+                ) {
                 FavFilter.entries.forEach { f ->
                     val (label, n) = when (f) {
                         FavFilter.ALL -> R.string.content_epg_all to counts.total
@@ -94,6 +102,16 @@ fun FavoritesScreen(
                         FavFilter.SERIES -> R.string.common_nav_series to counts.series
                     }
                     StageTool(onClick = { filter = f }, label = stringResource(label) + " " + n, on = filter == f)
+                }
+                }
+                // Kevin's copy: the red bin, as on More › History — Clear favourites by type or all.
+                if (counts.total > 0) {
+                    StageTool(
+                        onClick = { clearing = true },
+                        icon = MobileIcons.Delete,
+                        danger = true,
+                        contentDescription = stringResource(R.string.more_fav_clear),
+                    )
                 }
             }
         }
@@ -149,6 +167,9 @@ fun FavoritesScreen(
         }
     }
 
+    if (clearing) {
+        ClearFavouritesFlow(counts = counts, onClear = vm::clearFavourites, onDismiss = { clearing = false })
+    }
     menu?.let { (type, id, name) ->
         MobileBottomSheet(onDismissRequest = { menu = null }, title = name, stage = true) {
             StageSheetHeader(title = name)

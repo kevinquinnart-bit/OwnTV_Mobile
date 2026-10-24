@@ -203,7 +203,11 @@ fun LiveScreen(
     val listPane = @Composable {
     Column(Modifier.fillMaxSize()) {
         val current = playing
-        if (!twoPane && showPreview && current != null) {
+        // Kevin's copy: the channel keeps playing above the list while the search, order and Guide view
+        // tools stay usable under it — searching no longer means closing the channel first.
+        val previewAbove = !twoPane && showPreview && current != null
+        val toolsTop = if (previewAbove) 12.dp else TOOLS_TOP
+        if (previewAbove && current != null) {
             LivePreview(
                 tuner = tuner,
                 channel = current,
@@ -212,16 +216,17 @@ fun LiveScreen(
                 onFullscreen = openFullscreen,
                 modifier = Modifier.padding(top = PREVIEW_TOP),
             )
-        } else if (guideView) {
+        }
+        if (guideView) {
             LiveGuideTools(
                 guide = guideVm,
                 onGuideView = vm::toggleLiveView,
-                modifier = Modifier.padding(start = 14.dp, end = 14.dp, top = TOOLS_TOP, bottom = 12.dp),
+                modifier = Modifier.padding(start = 14.dp, end = 14.dp, top = toolsTop, bottom = 12.dp),
             )
         } else {
             // `.tools`: the search field takes the room, then the order tool (Provider / A–Z), then Guide view.
             Row(
-                Modifier.fillMaxWidth().padding(start = 14.dp, end = 14.dp, top = TOOLS_TOP, bottom = 12.dp),
+                Modifier.fillMaxWidth().padding(start = 14.dp, end = 14.dp, top = toolsTop, bottom = 12.dp),
                 horizontalArrangement = Arrangement.spacedBy(6.dp),
                 verticalAlignment = Alignment.CenterVertically,
             ) {

@@ -354,6 +354,29 @@ class LiveViewModel(
 
     private data class Args(val key: LiveKey, val ctx: ActiveProfileSources, val cust: SectionCustomizations, val hidden: Set<Long>)
 
+    // Kevin's copy: which entries are versions of the same channel (FHD / HD / SD). Rebuilt when the
+    // playlists change or their channels are re-downloaded, and shared with the tuner so it can step down
+    // to a lighter version when one keeps buffering. The same as the television's. See ChannelVariants.
+    private val variantIndex = MutableStateFlow(VariantIndex.EMPTY)
+
+    init {
+        viewModelScope.launch {
+            ctx.flatMapLatest { c ->
+                if (c.liveSourceIds.isEmpty()) flowOf(c to 0)
+                else channelDao.countAll(c.liveSourceIds).map { c to it }
+            }
+                .debounce(2_000)
+                .collect { (c, _) ->
+                    val index = if (c.liveSourceIds.isEmpty()) VariantIndex.EMPTY
+                    else kotlinx.coroutines.withContext(kotlinx.coroutines.Dispatchers.Default) {
+                        VariantIndex(channelDao.snapshotAll(c.liveSourceIds, VARIANT_INDEX_LIMIT))
+                    }
+                    variantIndex.value = index
+                    VariantIndexStore.index = index
+                }
+        }
+    }
+
     val channels: Flow<PagingData<ChannelEntity>> =
         combine(_selected, ctx, custom, hiddenCategoryIds, ::Args)
             // A folder gaining or losing a manual order changes which query is correct, and the
@@ -362,6 +385,7 @@ class LiveViewModel(
             .combine(orderedContexts) { args, _ -> args }
             .combine(sortMode) { args, _ -> args }
             .combine(_query.debounce(SEARCH_DEBOUNCE_MS).map { it.trim() }.distinctUntilChanged()) { args, q -> args to q }
+            .combine(variantIndex) { argsAndQuery, _ -> argsAndQuery }
             .flatMapLatest { (args, q) ->
                 val (key, c, cust, hidden) = args
                 if (c.profileId < 0) {
@@ -391,7 +415,7 @@ class LiveViewModel(
                             contextKey = { folderContextKeys.value[it] },
                             hasManualOrder = { it in orderedContexts.value },
                         )
-                    }.flow.map { paging -> paging.applyCustomizations(key, cust, hidden) }
+                    }.flow.map { paging -> paging.applyCustomizations(key, cust, hidden, q) }
                 }
             }
             .cachedIn(viewModelScope)
@@ -407,14 +431,31 @@ class LiveViewModel(
         key: LiveKey,
         cust: SectionCustomizations,
         hidden: Set<Long>,
+        query: String,
     ): PagingData<ChannelEntity> {
-        if (cust.hiddenItems.isEmpty() && cust.itemNames.isEmpty() && hidden.isEmpty() && cust.movedFromOrigin.isEmpty()) return this
+        val variants = variantIndex.value
+        // Kevin's copy: one entry per channel. Of a channel's versions, only the best one that this list
+        // holds is shown; a search shows whatever it matched. History and your own categories list exactly
+        // what was put there. The same rule as the television's.
+        val inThisList: (ChannelEntity) -> Boolean = when {
+            query.isNotBlank() -> { _ -> false }
+            key is LiveKey.Folder -> { m -> m.categoryId == key.id && tv.own.owntv.core.live.isChannelVisible(m, cust, hidden, key) }
+            key == LiveKey.Favorites -> { m -> m.id in favoriteIds.value }
+            key == LiveKey.Catchup -> { m -> m.catchup && tv.own.owntv.core.live.isChannelVisible(m, cust, hidden, key) }
+            key == LiveKey.All -> { m -> tv.own.owntv.core.live.isChannelVisible(m, cust, hidden, key) }
+            else -> { _ -> false }
+        }
         return filter { ch ->
             tv.own.owntv.core.live.isChannelVisible(ch, cust, hidden, key) &&
                 (cust.movedFromOrigin[CustomizeKeys.channel(ch)]?.let { origin ->
                     key !is LiveKey.Folder || origin != folderContextKeys.value[key.id]
-                } ?: true)
-        }.map { ch -> cust.itemNames[CustomizeKeys.channel(ch)]?.let { ch.copy(name = it) } ?: ch }
+                } ?: true) &&
+                variants.isShownIn(ch, inThisList)
+        }.map { ch ->
+            // No quality label in the name (a renamed channel keeps your name).
+            cust.itemNames[CustomizeKeys.channel(ch)]?.let { ch.copy(name = it) }
+                ?: ChannelVariants.displayName(ch.name).let { if (it == ch.name) ch else ch.copy(name = it) }
+        }
     }
 
     init {
@@ -662,6 +703,8 @@ class LiveViewModel(
 
     private companion object {
         const val PAGE_SIZE = 60
+        /** Enough for any real lineup; the grouping is built once per playlist change. */
+        const val VARIANT_INDEX_LIMIT = 100_000
         const val MOVE_LIST_LIMIT = 5_000
         const val REFRESH_SPINNER_MS = 1_200L
         const val SEARCH_DEBOUNCE_MS = 250L

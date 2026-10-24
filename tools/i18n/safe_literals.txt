@@ -247,12 +247,24 @@
 1	preference-key	app/src/main/java/tv/own/owntv/mobile/ui/screens/live/ChannelActions.kt	rename
 1	technical	app/src/main/java/tv/own/owntv/mobile/ui/screens/live/ChannelActions.kt	schedule_record
 1	technical	app/src/main/java/tv/own/owntv/mobile/ui/screens/live/ChannelActions.kt	−
+5	technical	app/src/main/java/tv/own/owntv/mobile/ui/screens/live/ChannelVariants.kt	\0
+1	regex	app/src/main/java/tv/own/owntv/mobile/ui/screens/live/ChannelVariants.kt	$EDGE_BEFORE(?:$LABELS)$EDGE_AFTER|ᵁᴴᴰ|ᶠᴴᴰ|ᴴᴰ|ˢᴰ|ᴿᴬᵂ|ᴴᴱⱽᶜ
+1	regex	app/src/main/java/tv/own/owntv/mobile/ui/screens/live/ChannelVariants.kt	${EDGE_BEFORE}(?:FHD|FULL ?HD|1080[PI]?)$EDGE_AFTER|ᶠᴴᴰ
+1	regex	app/src/main/java/tv/own/owntv/mobile/ui/screens/live/ChannelVariants.kt	${EDGE_BEFORE}(?:HD|HDR|720P)$EDGE_AFTER|ᴴᴰ
+1	regex	app/src/main/java/tv/own/owntv/mobile/ui/screens/live/ChannelVariants.kt	${EDGE_BEFORE}(?:SD|LQ|576P|540P)$EDGE_AFTER|ˢᴰ
+1	regex	app/src/main/java/tv/own/owntv/mobile/ui/screens/live/ChannelVariants.kt	${EDGE_BEFORE}(?:UHD|4K)$EDGE_AFTER|ᵁᴴᴰ
+1	technical	app/src/main/java/tv/own/owntv/mobile/ui/screens/live/ChannelVariants.kt	${it.groupValues[1]}
+1	technical	app/src/main/java/tv/own/owntv/mobile/ui/screens/live/ChannelVariants.kt	id|${ch.id}
+1	technical	app/src/main/java/tv/own/owntv/mobile/ui/screens/live/ChannelVariants.kt	|
 1	technical	app/src/main/java/tv/own/owntv/mobile/ui/screens/live/LiveCatchupSheet.kt	jump-back
 1	empty	app/src/main/java/tv/own/owntv/mobile/ui/screens/live/LiveCategoriesSheet.kt	\0
 1	technical	app/src/main/java/tv/own/owntv/mobile/ui/screens/live/LiveCategoriesSheet.kt	heading
 1	protocol	app/src/main/java/tv/own/owntv/mobile/ui/screens/live/LivePreview.kt	Mbps
 1	preference-key	app/src/main/java/tv/own/owntv/mobile/ui/screens/live/LiveScreen.kt	live
 1	technical	app/src/main/java/tv/own/owntv/mobile/ui/screens/live/LiveScreen.kt	tnum
+1	empty	app/src/main/java/tv/own/owntv/mobile/ui/screens/live/LiveTuner.kt	\0
+1	log	app/src/main/java/tv/own/owntv/mobile/ui/screens/live/LiveTuner.kt	LiveVariant
+1	log	app/src/main/java/tv/own/owntv/mobile/ui/screens/live/LiveTuner.kt	variant step down to ${next.id} (${variantAt + 1} of ${variantVersions.size})
 2	empty	app/src/main/java/tv/own/owntv/mobile/ui/screens/live/LiveViewModel.kt	\0
 1	log	app/src/main/java/tv/own/owntv/mobile/ui/screens/live/LiveViewModel.kt	manual
 1	technical	app/src/main/java/tv/own/owntv/mobile/ui/screens/live/ScheduleRecordingSheet.kt	%02d:%02d

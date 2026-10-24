@@ -6,6 +6,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -600,8 +601,10 @@ class LiveTuner(
             }
             previewChannel = channel
             _previewing.value = true
-            _channel.value = custom.value.itemNames[CustomizeKeys.channel(channel)]?.let { channel.copy(name = it) } ?: channel
-            live.preview(channel, muted = !settings.livePreviewAudio.first())
+            _channel.value = shownChannel(channel)
+            disarmVariantWatch()
+            // Kevin's copy: the preview plays the channel's best version, the one opening it full screen starts on.
+            live.preview(versionsOf(channel).first(), muted = !settings.livePreviewAudio.first())
             _nowNext.value = epgReader.nowNext(channel, custom.value, settings.epgOffsetMinutes.first())
             loadSiblings(channel)
         }
@@ -612,7 +615,7 @@ class LiveTuner(
         val channel = previewChannel?.takeIf { _previewing.value } ?: return
         _previewing.value = false
         previewChannel = null
-        live.expectPromotion(channel)
+        live.expectPromotion(versionsOf(channel).first())
         live.launch { open(channel) }
     }
 
@@ -675,19 +678,23 @@ class LiveTuner(
         val pid = ctx.value.profileId.takeIf { it >= 0 } ?: return refuse()
         if (!AdultCategoryClassifier.allows(pid, channel.categoryId, profileDao, categoryDao)) return refuse()
 
-        val source = withContext(Dispatchers.IO) { sourceDao.getById(channel.sourceId) }
+        // Kevin's copy: the stream that opens is the channel's best version; the watch below steps down
+        // to a lighter one if it keeps buffering. What the screen calls "the channel" stays the one picked.
+        val versions = versionsOf(channel)
+        val stream = versions.first()
+        val source = withContext(Dispatchers.IO) { sourceDao.getById(stream.sourceId) }
         // Stalker portals mint a play URL per tune; the stored "URL" is a portal command until then.
         val url = if (streamUrlResolver.needsResolve(source)) {
-            runCatching { streamUrlResolver.resolve(source!!, channel.streamUrl) }.getOrNull() ?: return refuse()
+            runCatching { streamUrlResolver.resolve(source!!, stream.streamUrl) }.getOrNull() ?: return refuse()
         } else {
-            channel.streamUrl
+            stream.streamUrl
         }
 
         timeshift.clear() // a new channel is never still rewound into the old one's archive
         _replaying.value = false
         lastCatchup = null
         // A renamed channel keeps its new name on this screen too — the row the user tapped had it.
-        val named = custom.value.itemNames[CustomizeKeys.channel(channel)]?.let { channel.copy(name = it) } ?: channel
+        val named = shownChannel(channel)
         _channel.value = named
         _previewing.value = false
         previewChannel = null
@@ -709,7 +716,8 @@ class LiveTuner(
             // Core decides which engine opens it, arms the ladder and starts it — the television's
             // order of authority (DRM, the pin, a learned panel refusal, the playlist, the setting).
             // The link minted above is reused for the first rung: minting ends the previous session.
-            live.start(named, source, resolved = url)
+            armVariantWatch(versions, named.name)
+            live.start(if (stream.id == channel.id) named else stream.copy(name = named.name), source, resolved = url)
             applyAudioOnlyDefault(channel)
         } else {
             live.noteWatched(named) // "previous channel" follows a cast zap too (N2)
@@ -734,6 +742,97 @@ class LiveTuner(
         // A copy saved on this device (N4) is the exception: the other engine continues it at the same moment.
         if (_replaying.value || (timeshift.isRewound && !hasLocalCopy.value)) return
         live.toggleEngine()
+    }
+
+    // ---- Kevin's copy: one channel, several streams (FHD / HD / SD) — the television's rules ----------
+    // Opening a channel starts on its best version. Three stalls of a second or more within two minutes,
+    // or one stall of eight seconds, moves to the next version down (FHD → HD → the unlabelled one → SD).
+    // Live only: a rewind or a replayed programme is left alone. Opening the channel again starts from its best.
+
+    /** The name to show: your rename, else the provider's name without its quality label. */
+    private fun shownChannel(channel: ChannelEntity): ChannelEntity =
+        custom.value.itemNames[CustomizeKeys.channel(channel)]?.let { channel.copy(name = it) }
+            ?: ChannelVariants.displayName(channel.name).let { if (it == channel.name) channel else channel.copy(name = it) }
+
+    /** Every visible stream of [channel]'s channel, best first; just [channel] when it has no others. */
+    private fun versionsOf(channel: ChannelEntity): List<ChannelEntity> =
+        VariantIndexStore.index.group(channel)
+            .filter { tv.own.owntv.core.live.isChannelVisible(it, custom.value, emptySet(), null) }
+            .ifEmpty { listOf(channel) }
+
+    private var variantVersions: List<ChannelEntity> = emptyList()
+    private var variantAt = 0
+    private var variantShownName = ""
+    private val variantStalls = ArrayDeque<Long>()
+    private var variantHasPlayed = false
+    private var variantBufferingSince = 0L
+    private var variantLongStall: kotlinx.coroutines.Job? = null
+
+    private fun armVariantWatch(versions: List<ChannelEntity>, shownName: String) {
+        variantVersions = if (versions.size > 1) versions else emptyList()
+        variantAt = 0
+        variantShownName = shownName
+        resetVariantStalls()
+    }
+
+    private fun disarmVariantWatch() {
+        variantVersions = emptyList()
+        resetVariantStalls()
+    }
+
+    private fun resetVariantStalls() {
+        variantStalls.clear()
+        variantHasPlayed = false
+        variantBufferingSince = 0L
+        variantLongStall?.cancel()
+        variantLongStall = null
+    }
+
+    private fun onVariantPlayback(buffering: Boolean, playing: Boolean) {
+        if (variantVersions.isEmpty()) return
+        val now = android.os.SystemClock.elapsedRealtime()
+        if (playing && !buffering) {
+            if (variantBufferingSince > 0L && now - variantBufferingSince >= VARIANT_STALL_MS) {
+                variantStalls.addLast(now)
+                while (variantStalls.isNotEmpty() && now - variantStalls.first() > VARIANT_STALL_WINDOW_MS) variantStalls.removeFirst()
+            }
+            variantHasPlayed = true
+            variantBufferingSince = 0L
+            variantLongStall?.cancel()
+            if (variantStalls.size >= VARIANT_STALLS_TO_STEP) stepDownVariant()
+            return
+        }
+        if (buffering && variantHasPlayed && variantBufferingSince == 0L) {
+            variantBufferingSince = now
+            variantLongStall?.cancel()
+            variantLongStall = scope.launch {
+                kotlinx.coroutines.delay(VARIANT_LONG_STALL_MS)
+                if (variantBufferingSince > 0L) stepDownVariant()
+            }
+        }
+    }
+
+    private fun stepDownVariant() {
+        if (_replaying.value || timeshift.isRewound) { resetVariantStalls(); return }
+        if (variantAt + 1 >= variantVersions.size) { resetVariantStalls(); return }
+        variantAt++
+        val next = variantVersions[variantAt]
+        resetVariantStalls()
+        android.util.Log.i(VARIANT_TAG, "variant step down to ${next.id} (${variantAt + 1} of ${variantVersions.size})")
+        live.launch {
+            val source = withContext(Dispatchers.IO) { sourceDao.getById(next.sourceId) }
+            live.start(next.copy(name = variantShownName), source)
+        }
+    }
+
+    init {
+        scope.launch {
+            combine(exo.buffering, player.buffering, exo.isPlaying, player.isPlaying) { b1, b2, p1, p2 ->
+                (b1 || b2) to (p1 || p2)
+            }
+                .distinctUntilChanged()
+                .collect { (buffering, playing) -> onVariantPlayback(buffering, playing) }
+        }
     }
 
     // --- Multiview: channels kept from the browse screen ------------------------------------------
@@ -1120,6 +1219,7 @@ class LiveTuner(
 
     /** Stop playing altogether — the mini player's swipe-down, and nothing else. */
     fun stop() {
+        disarmVariantWatch()
         timeshift.clear()
         loadedId = null
         _previewing.value = false
@@ -1181,6 +1281,13 @@ class LiveTuner(
 
     private companion object {
         const val SIBLING_LIMIT = 2_000
+
+        // Kevin's copy: when a channel's stream counts as buffering too much (see stepDownVariant).
+        const val VARIANT_STALL_MS = 1_000L
+        const val VARIANT_STALL_WINDOW_MS = 120_000L
+        const val VARIANT_STALLS_TO_STEP = 3
+        const val VARIANT_LONG_STALL_MS = 8_000L
+        const val VARIANT_TAG = "LiveVariant"
 
         /** How long Channel +/− waits for the user to stop pressing before it opens a stream — the
          *  television's figure. */

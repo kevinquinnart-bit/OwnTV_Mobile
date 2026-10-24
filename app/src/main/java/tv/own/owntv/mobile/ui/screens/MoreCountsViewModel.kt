@@ -17,6 +17,8 @@ import tv.own.owntv.core.backup.UserDataWriter
 import tv.own.owntv.core.companion.CompanionServerState
 import tv.own.owntv.core.customize.CustomizationStore
 import tv.own.owntv.core.database.dao.ChannelDao
+import tv.own.owntv.core.database.dao.ContentOrderDao
+import tv.own.owntv.core.database.dao.FavoriteDao
 import tv.own.owntv.core.database.dao.DownloadDao
 import tv.own.owntv.core.database.dao.HistoryDao
 import tv.own.owntv.core.database.dao.MovieDao
@@ -99,6 +101,8 @@ class MoreCountsViewModel(
     private val epgReader: LiveEpgReader,
     private val customize: CustomizationStore,
     private val vodTuner: VodTuner,
+    private val favoriteDao: FavoriteDao,
+    private val contentOrderDao: ContentOrderDao,
 ) : ViewModel() {
 
     private val ctx: StateFlow<ActiveProfileSources> = activeProfileSources(settings, sourceDao)
@@ -177,6 +181,24 @@ class MoreCountsViewModel(
             )
         }
         return HistoryLists(live, movies, series)
+    }
+
+    /**
+     * Kevin's copy — Clear favourites: one type ([type] LIVE / MOVIE / SERIES) or everything ([type] null),
+     * on the active profile, from every playlist, plus that type's hand-made favourites order. Each goes
+     * through [UserDataWriter.removeFavorite], so the deletion is recorded and Local sync does not bring
+     * it back from the other device. The same as the television's.
+     */
+    fun clearFavourites(type: MediaType?) {
+        viewModelScope.launch {
+            val pid = settings.activeProfileId.first()
+            if (pid < 0) return@launch
+            val rows = favoriteDao.getAllOnce().filter { it.profileId == pid && (type == null || it.mediaType == type) }
+            rows.forEach { userDataWriter.removeFavorite(pid, it.mediaType, it.itemId) }
+            rows.map { it.mediaType }.distinct().forEach { t ->
+                contentOrderDao.replaceContext(pid, t, ContentOrderEntity.FAV_CONTEXT, emptyList())
+            }
+        }
     }
 
     fun removeFavourite(type: MediaType, id: Long) {

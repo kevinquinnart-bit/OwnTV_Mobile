@@ -3,3 +3,12 @@
 # One tab-separated line per (file, normalised content) with its occurrence count.
 # Phase 1 deletes occurrences until this file is empty; the CI guard then becomes absolute.
 # Format: <count>\t<relative path>\t<content with \t/\n escaped>
+
+1	app/src/main/java/tv/own/owntv/mobile/ui/screens/live/ChannelVariants.kt	(?![\\p{L}\\p{N}])
+1	app/src/main/java/tv/own/owntv/mobile/ui/screens/live/ChannelVariants.kt	(?<![\\p{L}\\p{N}])
+1	app/src/main/java/tv/own/owntv/mobile/ui/screens/live/ChannelVariants.kt	UHD|4K|FHD|FULL ?HD|HDR|HEVC|H\\.?26[45]|HD|SD|1080[PI]?|720P|576P|540P|(?:50|60) ?FPS|LQ|HQ|RAW
+1	app/src/main/java/tv/own/owntv/mobile/ui/screens/live/ChannelVariants.kt	[^\\p{L}\\p{N}+]+
+1	app/src/main/java/tv/own/owntv/mobile/ui/screens/live/ChannelVariants.kt	\\(\\s*\\)|\\[\\s*\\]|\\{\\s*\\}
+1	app/src/main/java/tv/own/owntv/mobile/ui/screens/live/ChannelVariants.kt	\\s*([|•\\-:])(\\s*[|•\\-])+\\s*
+1	app/src/main/java/tv/own/owntv/mobile/ui/screens/live/ChannelVariants.kt	\\s+
+1	app/src/main/java/tv/own/owntv/mobile/ui/screens/live/ChannelVariants.kt	^[\\s|•\\-:]+|[\\s|•\\-:]+$

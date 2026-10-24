@@ -27,7 +27,7 @@ val shellModule = module {
     viewModelOf(::ProfileGateSession)
     // The counts the More rows and the Favourites / History chips carry.
     viewModel {
-        tv.own.owntv.mobile.ui.screens.MoreCountsViewModel(get(), get(), get(), get(), get(), get(), get(), get(), get(), get(), get(), get(), get())
+        tv.own.owntv.mobile.ui.screens.MoreCountsViewModel(get(), get(), get(), get(), get(), get(), get(), get(), get(), get(), get(), get(), get(), get(), get())
     }
     viewModel { BackupViewModel(get(), get(), androidContext(), get(), get(), get()) }
     viewModel { tv.own.owntv.mobile.ui.screens.settings.LocalSyncViewModel(get()) }

@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Kevin's copy — Clear favourites (More › Favourites): the bin, the picker and its four confirmations. Same wording as the television. -->
+    <string name="more_fav_clear">Clear favourites</string>
+    <string name="more_fav_clear_choose">Choose what to remove for this profile. Playlists and history are not affected.</string>
+    <string name="more_fav_clear_all_option">All favourites</string>
+    <string name="more_fav_clear_confirm_live">Clear Live TV favourites?</string>
+    <string name="more_fav_clear_confirm_movies">Clear movie favourites?</string>
+    <string name="more_fav_clear_confirm_series">Clear series favourites?</string>
+    <string name="more_fav_clear_confirm_all">Clear all favourites?</string>
+</resources>
