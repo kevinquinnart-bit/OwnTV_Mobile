@@ -310,6 +310,8 @@ open class MainActivity : FragmentActivity() {
         lifecycleScope.launch {
             applyDefaultPlaylistAutoRefresh(settings, org.koin.core.context.GlobalContext.get().get<tv.own.owntv.core.database.dao.SourceDao>())
             autoRefresh.check(includeStartup = false)
+            // Kevin's copy: opening the app refreshes playlists and guides, as on the television.
+            if (settings.activeProfileId.first() >= 0) refreshOnOpen()
         }
         if (droppedVideoForBackground) {
             droppedVideoForBackground = false

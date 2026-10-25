@@ -63,3 +63,46 @@ internal suspend fun downloadEmptySources() {
 }
 
 private const val EMPTY_FILL = "empty_fill"
+
+/**
+ * Kevin's copy: every time the app is opened, each playlist and TV Guide refreshes, unless it was
+ * refreshed in the last [ON_OPEN_MIN_GAP_MS] (so opening it a few times in a row does not download
+ * everything again each time). A playlist or guide set to Off is left alone. The same as the television.
+ *
+ * REPLACE, not KEEP: core's own timed refresh queues its job with KEEP and then holds it until playback
+ * stops. Kept, that waiting job would swallow this one and nothing would download while something plays.
+ */
+internal suspend fun refreshOnOpen() {
+    val koin = org.koin.core.context.GlobalContext.get()
+    val settings = koin.get<SettingsRepository>()
+    val now = System.currentTimeMillis()
+    runCatching {
+        val modes = settings.epgAutoRefresh.first()
+        val epgDao = koin.get<tv.own.owntv.core.database.dao.EpgDao>()
+        val epgSync = koin.get<tv.own.owntv.core.sync.work.EpgSyncScheduler>()
+        koin.get<EpgSourceStore>().getAll().forEach { src ->
+            if (modes[src.id]?.mode == EpgAutoRefresh.OFF) return@forEach
+            if (now - (src.lastSyncAt ?: 0L) >= ON_OPEN_MIN_GAP_MS) {
+                epgSync.enqueueSync(src.id, ON_OPEN, epgDao.countForSources(listOf(src.id)), androidx.work.ExistingWorkPolicy.REPLACE)
+            }
+        }
+    }
+    runCatching {
+        val modes = settings.playlistAutoRefresh.first()
+        val catalog = koin.get<tv.own.owntv.core.sync.work.CatalogSyncScheduler>()
+        koin.get<SourceDao>().getAllOnce().forEach { source ->
+            if (modes[source.id]?.mode == PlaylistAutoRefresh.OFF) return@forEach
+            if (now - (source.lastSyncAt ?: 0L) >= ON_OPEN_MIN_GAP_MS) {
+                catalog.enqueueSync(
+                    source.id,
+                    reason = ON_OPEN,
+                    contentTypes = tv.own.owntv.core.sync.SyncContentTypes.enabledOf(source),
+                    policy = androidx.work.ExistingWorkPolicy.REPLACE,
+                )
+            }
+        }
+    }
+}
+
+private const val ON_OPEN = "on_open_refresh"
+private const val ON_OPEN_MIN_GAP_MS = 10 * 60_000L

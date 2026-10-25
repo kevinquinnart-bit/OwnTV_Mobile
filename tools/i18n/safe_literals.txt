@@ -20,6 +20,7 @@
 # category technical: Reviewed non-user-facing technical literal.
 
 1	technical	app/src/main/java/tv/own/owntv/mobile/DefaultAutoRefresh.kt	empty_fill
+1	protocol	app/src/main/java/tv/own/owntv/mobile/DefaultAutoRefresh.kt	on_open_refresh
 1	technical	app/src/main/java/tv/own/owntv/mobile/MainActivity.kt	back
 1	technical	app/src/main/java/tv/own/owntv/mobile/MainActivity.kt	forward
 1	uri	app/src/main/java/tv/own/owntv/mobile/MainActivity.kt	open_player
