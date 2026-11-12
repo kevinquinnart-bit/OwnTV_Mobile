@@ -1,9 +1,7 @@
 name: Android CI
 
-# Modelled on the TV app's workflow (ahXN00/OwnTV), which this repo is the second consumer of core
-# alongside. Three jobs:
-#   verify-pin — core pin bumps ONLY. Seconds, no build. See its own note.
-#   check      — unit tests + lint. Gates the build. Skipped on core pin bumps.
+# Two jobs:
+#   check      — unit tests + lint. Gates the build.
 #   build      — assembles the APKs, and publishes a GitHub Release on v* tags. Never runs for a PR,
 #                so PR branches only get the test/lint verdict, never an APK.
 on:
@@ -17,75 +15,15 @@ on:
 permissions:
   contents: write   # required so tag builds can create a Release
 
-# Core (tv.own.owntv:core, :player-core) and the mpv engine (tv.own.owntv:libmpv) resolve from OwnTV's
-# public Maven repository, https://ahxn00.github.io/OwnTV_Core/maven — no token, so fork pull requests
-# build exactly like the maintainer's. There is no owntv.corePath here: CI deliberately builds against
-# the PINNED artifact, which is what a release actually ships. Local builds use the composite.
+# Kevin's copy (KueTV): the shared code (kuetv-core) and the mpv engine (kuetv-maven) are both in this
+# repo, so a build downloads nothing from the original project.
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
 jobs:
-  # A "Pin core x.y.z" pull request opened by core's bump-consumers workflow changes exactly two
-  # files and no application code. Running the unit tests, lint and the i18n checks on it re-verifies
-  # this repo's Kotlin, which is byte-identical to main — minutes of runner time that cannot report
-  # anything new. So those jobs step aside for these branches and this one runs instead.
-  #
-  # It also keeps the workflow run itself concluding "success". A run whose every job is skipped
-  # concludes as "skipped", and automerge-core-bump.yml requires success — skip everything and the
-  # pull request would sit open for ever.
-  #
-  # What is actually worth checking on such a pull request is that the numbers agree: seconds, no
-  # build, no Gradle, no Android SDK.
-  verify-pin:
-    if: ${{ github.event_name == 'pull_request' && startsWith(github.head_ref, 'bump/core-') }}
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v7
-
-      - name: The pin must be core's newest release, and locales.json must match it
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          HEAD_BRANCH: ${{ github.head_ref }}
-        run: |
-          set -euo pipefail
-
-          PIN=$(sed -n 's/^owntvCore = "\(.*\)"$/\1/p' gradle/libs.versions.toml)
-          [ -n "$PIN" ] || { echo "::error::Could not read owntvCore from gradle/libs.versions.toml."; exit 1; }
-
-          # The branch name carries the version too, so a mismatch means the two halves of the bump
-          # disagree about what is being pinned.
-          if [ "$HEAD_BRANCH" != "bump/core-$PIN" ]; then
-            echo "::error::Branch $HEAD_BRANCH does not match the pin $PIN."
-            exit 1
-          fi
-
-          # Core publishes the release only AFTER its tests pass and both artifacts are pushed, so a
-          # release existing is proof the version is real and installable.
-          LATEST=$(gh api repos/ahXN00/OwnTV_Core/releases/latest --jq .tag_name)
-          LATEST="${LATEST#core-}"
-          if [ "$PIN" != "$LATEST" ]; then
-            echo "::error::Pinned $PIN but core's newest release is $LATEST."
-            exit 1
-          fi
-
-          # The other file the bump touches. It is duplicated into every consumer because Gradle
-          # reads it at configure time to build localeFilters, and core's own copy never reaches
-          # here. A stale copy silently strips a language out of the APK with a green build.
-          curl -fsSL -o /tmp/locales.core.json \
-            "https://raw.githubusercontent.com/ahXN00/OwnTV_Core/core-$PIN/tools/i18n/locales.json"
-          if ! diff -u /tmp/locales.core.json tools/i18n/locales.json; then
-            echo "::error::tools/i18n/locales.json differs from core's copy at core-$PIN."
-            exit 1
-          fi
-
-          echo "Pin $PIN is core's newest release, the branch agrees, and locales.json matches."
-
   check:
-    # Core pin bumps carry no application code — verify-pin above covers them instead.
-    if: ${{ !(github.event_name == 'pull_request' && startsWith(github.head_ref, 'bump/core-')) }}
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -103,18 +41,6 @@ jobs:
           # 'tools' is obsolete and Google removed it from the SDK repository; the
           # action still asks for it by default, which fails the whole setup step.
           packages: 'platform-tools'
-
-      # Kevin's copy: this app's main branch needs shared-code changes newer than the last published
-      # core release, so the shared code is built from source at a fixed commit (the same way the
-      # author builds locally). Change CORE_SHA to move to newer shared code.
-      - name: Fetch the shared core code
-        env:
-          CORE_SHA: 320e3598e982aa5d1bf7c6d7fa6e015875050e2a
-        run: |
-          git init -q "$RUNNER_TEMP/OwnTV_Core"
-          git -C "$RUNNER_TEMP/OwnTV_Core" fetch -q --depth 1 https://github.com/ahXN00/OwnTV_Core "$CORE_SHA"
-          git -C "$RUNNER_TEMP/OwnTV_Core" checkout -q FETCH_HEAD
-          printf '\nowntv.corePath=%s\n' "$RUNNER_TEMP/OwnTV_Core" >> gradle.properties
 
       - name: Set up Gradle
         uses: gradle/actions/setup-gradle@v6
@@ -168,18 +94,6 @@ jobs:
           # 'tools' is obsolete and Google removed it from the SDK repository; the
           # action still asks for it by default, which fails the whole setup step.
           packages: 'platform-tools'
-
-      # Kevin's copy: this app's main branch needs shared-code changes newer than the last published
-      # core release, so the shared code is built from source at a fixed commit (the same way the
-      # author builds locally). Change CORE_SHA to move to newer shared code.
-      - name: Fetch the shared core code
-        env:
-          CORE_SHA: 320e3598e982aa5d1bf7c6d7fa6e015875050e2a
-        run: |
-          git init -q "$RUNNER_TEMP/OwnTV_Core"
-          git -C "$RUNNER_TEMP/OwnTV_Core" fetch -q --depth 1 https://github.com/ahXN00/OwnTV_Core "$CORE_SHA"
-          git -C "$RUNNER_TEMP/OwnTV_Core" checkout -q FETCH_HEAD
-          printf '\nowntv.corePath=%s\n' "$RUNNER_TEMP/OwnTV_Core" >> gradle.properties
 
       - name: Set up Gradle
         uses: gradle/actions/setup-gradle@v6
@@ -295,21 +209,22 @@ jobs:
           APKSIGNER=$(ls "$ANDROID_HOME"/build-tools/*/apksigner | sort -V | tail -n1)
           "$APKSIGNER" verify --print-certs "$ARM_SRC"
 
-      - name: Name the APK (OwnTV-Mobile-v<version>)
+      - name: Name the APK (KueTV-Mobile-v<version>)
         run: |
           mkdir -p dist
-          OUT="OwnTV-Mobile-v${{ steps.ver.outputs.name }}.apk"
+          OUT="KueTV-Mobile-v${{ steps.ver.outputs.name }}.apk"
           cp "$ARM_SRC" "dist/$OUT"
           # Fixed name for the always-latest download link.
           cp "$ARM_SRC" "dist/OwnTV-Mobile.apk"
+          cp "$ARM_SRC" "dist/KueTV-Mobile.apk"
           echo "APK_OUT=$OUT" >> "$GITHUB_ENV"
           echo "Packaged dist/$OUT (arm: arm64-v8a + armeabi-v7a)"
           # The x86_64 APK is for the emulator, so it is only published on a tag and only under its
           # version name. There is no always-latest copy of either: this app has no in-app updater
           # and no Downloader-style sideload audience, which is what that fixed URL exists for on TV.
           if [ "$IS_TAG" = "true" ] && [ -n "$X86_SRC" ]; then
-            cp "$X86_SRC" "dist/OwnTV-Mobile-x86_64-v${{ steps.ver.outputs.name }}.apk"
-            echo "Packaged dist/OwnTV-Mobile-x86_64-v${{ steps.ver.outputs.name }}.apk"
+            cp "$X86_SRC" "dist/KueTV-Mobile-x86_64-v${{ steps.ver.outputs.name }}.apk"
+            echo "Packaged dist/KueTV-Mobile-x86_64-v${{ steps.ver.outputs.name }}.apk"
           fi
 
       - name: Upload APK artifact
@@ -335,9 +250,10 @@ jobs:
         with:
           tag_name: v${{ steps.ver.outputs.name }}
           target_commitish: ${{ github.sha }}
-          name: OwnTV Mobile ${{ steps.ver.outputs.name }}
+          name: KueTV Mobile ${{ steps.ver.outputs.name }}
           files: |
             dist/${{ env.APK_OUT }}
+            dist/KueTV-Mobile.apk
             dist/OwnTV-Mobile.apk
           body_path: dist/BUILD_NOTES.md
           make_latest: true
@@ -376,10 +292,10 @@ jobs:
         if: env.IS_TAG == 'true'
         uses: softprops/action-gh-release@v3
         with:
-          name: OwnTV Mobile ${{ github.ref_name }}
+          name: KueTV Mobile ${{ github.ref_name }}
           files: |
             dist/${{ env.APK_OUT }}
-            dist/OwnTV-Mobile-x86_64-v${{ steps.ver.outputs.name }}.apk
+            dist/KueTV-Mobile-x86_64-v${{ steps.ver.outputs.name }}.apk
           body_path: dist/RELEASE_NOTES.md
           # Must stay false: it appends GitHub's auto commit/PR list under the body, burying the
           # hand-written notes.

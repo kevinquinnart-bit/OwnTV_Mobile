@@ -91,16 +91,7 @@ fun SettingsLanguagePage(
             )
         }
 
-        settingsGroup(key = "help") {
-            SettingRow(
-                title = stringResource(R.string.settings_language_help_translate),
-                subtitle = stringResource(R.string.settings_language_contribution_description),
-                icon = MobileIcons.Translate,
-                showChevron = true,
-                onClick = { helpSheet = true },
-            )
-        }
-
+        // Kevin's copy (v2): no "Help translate" — that is the original project's translation site.
         settingsGroup(key = "languages") {
             if (showSystem) {
                 LanguageRow(

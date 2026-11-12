@@ -11,7 +11,7 @@ from format_specs import _tokens as format_tokens
 
 ROOT = Path(__file__).resolve().parents[2]
 # Every Gradle module whose Kotlin ships to users, same rule as check_hardcoded_strings.SRC_ROOTS.
-# :app is the only one here; the core library's Kotlin is gated in ahXN00/OwnTV_Core.
+# :app is the only one here; the core library's Kotlin is gated in kuetv-core.
 SOURCE_ROOTS = [
     ROOT / "app" / "src" / "main" / "java",
 ]

@@ -126,33 +126,7 @@ fun AboutPage(onOpenLanguage: () -> Unit, modifier: Modifier = Modifier) {
             color = palette.body,
             modifier = Modifier.padding(top = 16.dp),
         )
-        // The Telegram card: the QR drawn from the address (never shipped as a picture, so the two cannot
-        // drift), the group, the address in the accent, and the whole card opens it.
-        val interaction = remember { MutableInteractionSource() }
-        Row(
-            Modifier
-                .padding(top = 16.dp)
-                .fillMaxWidth()
-                .clip(RoundedCornerShape(18.dp))
-                .background(palette.ink.copy(alpha = 0.045f))
-                .stageClickable(interaction, { openLink(context, "https://$TELEGRAM_LINK") }, null)
-                .padding(14.dp),
-            horizontalArrangement = Arrangement.spacedBy(12.dp),
-            verticalAlignment = Alignment.CenterVertically,
-        ) {
-            remember { CompanionLink.renderQr("https://$TELEGRAM_LINK") }?.let { qr ->
-                Image(
-                    bitmap = qr.asImageBitmap(),
-                    contentDescription = stringResource(R.string.settings_telegram_qr),
-                    modifier = Modifier.size(84.dp).clip(RoundedCornerShape(10.dp)).background(Color.White).padding(6.dp),
-                )
-            }
-            Column {
-                Text(stringResource(R.string.settings_join_telegram), style = stageText(14f, 800), color = palette.text)
-                Text(TELEGRAM_LINK, style = stageText(11f, 500), color = stageAccent.accent)
-                Text(stringResource(R.string.more_about_scan_mobile), style = stageText(11f, 500), color = palette.muted)
-            }
-        }
+        // Kevin's copy (v2): no Telegram card — it was the original project's group.
         @OptIn(ExperimentalLayoutApi::class)
         FlowRow(Modifier.padding(top = 14.dp), horizontalArrangement = Arrangement.spacedBy(6.dp), verticalArrangement = Arrangement.spacedBy(6.dp)) {
             StageTool(onClick = { openLink(context, "https://$GITHUB_REPO") }, label = GITHUB_NAME, icon = MobileIcons.Translate)
@@ -310,7 +284,6 @@ internal fun loggedWhen(atMs: Long): String {
 
 private const val GITHUB_REPO = "github.com/kevinquinnart-bit/OwnTV_Mobile"
 private const val GITHUB_NAME = "GitHub"
-private const val TELEGRAM_LINK = "t.me/owntvplayer"
 
 
 private fun openLink(context: Context, url: String) {

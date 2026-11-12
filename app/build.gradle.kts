@@ -4,7 +4,7 @@ import javax.inject.Inject
 import org.gradle.process.ExecOperations
 
 // Packaged locale qualifiers are read from tools/i18n/locales.json entries where packaged = true.
-// That catalogue is owned by the core repo (ahXN00/OwnTV_Core), which holds the strings; the copy
+// That catalogue is owned by kuetv-core, which holds the strings; the copy
 // here exists only because Gradle needs the list before any dependency is resolved, so core's copy
 // never reaches this build. The pin-bump PR refreshes both files together — never edit one alone,
 // or a new language is silently stripped out of the APK while the build stays green.
@@ -201,6 +201,9 @@ android {
         // local.properties is developer-local and never committed (its Windows SDK path cannot be
         // escaped without breaking the local tooling that writes it). CI has no such file at all.
         disable += "PropertyEscape"
+        // Kevin's copy (v2): the KueTV name overrides are per language and cover only the strings that
+        // name the app; every other string falls back to core's, as on the TV.
+        disable += "MissingTranslation"
     }
 
     compileOptions {
@@ -319,8 +322,7 @@ val verifyI18nLiterals = tasks.register<VerifyI18nLiterals>("verifyI18nLiterals"
 tasks.named("preBuild") { dependsOn(verifyI18nLiterals) }
 
 dependencies {
-    // The shared engine, from its own repository — https://github.com/ahXN00/OwnTV_Core. Set
-    // owntv.corePath in ~/.gradle/gradle.properties to build against its source instead of the pin.
+    // The shared engine, built from kuetv-core in this repo.
     implementation(libs.owntv.core)
     // The shared playback engine. It renders nothing itself, which is exactly why the same engine
     // serves the TV HUD and this app's touch controls. Always on core's version.

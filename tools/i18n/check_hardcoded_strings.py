@@ -28,7 +28,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
 # Every Gradle module whose Kotlin ships to users. :app is the only one in this repository — the
-# core library's own Kotlin is gated by the identical check in ahXN00/OwnTV_Core, so a literal
+# core library's own Kotlin is gated by the identical check in kuetv-core, so a literal
 # cannot escape by moving between the two. A new module here needs a line added, or its text is
 # never scanned.
 SRC_ROOTS = [

@@ -9,7 +9,7 @@ from typing import NamedTuple
 
 ROOT = Path(__file__).resolve().parents[2]
 # Every module whose Kotlin ships to users. :app is the only one here; the core library's Kotlin
-# is gated by the identical check in ahXN00/OwnTV_Core.
+# is gated by the identical check in kuetv-core.
 SOURCE_ROOTS = [ROOT / "app/src/main/java"]
 ALLOWLIST = ROOT / "tools/i18n/text_overflow_allowlist.txt"
 

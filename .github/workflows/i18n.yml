@@ -8,7 +8,7 @@ name: i18n
 #               localeFilters in debug and are absent in release. The flag being set is not proof.
 #
 # The strings themselves are NOT in this repository. Every strings*.xml lives in the core library
-# (ahXN00/OwnTV_Core), so locales.json schema checks, placeholder/plural parity, translation
+# (kuetv-core), so locales.json schema checks, placeholder/plural parity, translation
 # coverage and the toolkit's own regression tests all run there. What runs here is only what this
 # repo's own Kotlin can get wrong.
 #
@@ -24,7 +24,7 @@ name: i18n
 #
 # All three step aside for a "Pin core x.y.z" branch: that pull request changes the pin and
 # locales.json and no Kotlin at all, so every check here would re-examine code identical to main.
-# android.yml's verify-pin job covers those pull requests instead.
+# (Kevin's copy: there are no core pin bumps any more.)
 
 on:
   pull_request:

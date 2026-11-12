@@ -3,7 +3,7 @@
 **The strings themselves are not in this repository.** Every `strings*.xml`, the language catalogue
 that owns them, the Weblate integration and the translator guide live in the core library repo:
 
-<https://github.com/ahXN00/OwnTV_Core> (`tools/i18n/README.md` there). Add, change or translate a
+<https://github.com/kuetv-core> (`tools/i18n/README.md` there). Add, change or translate a
 string there — **including a string only this app uses**, exactly as the TV app does. A strings file
 in this repo would never be seen by Weblate and would be English-only for ever, which is the one
 thing the rule forbids.
