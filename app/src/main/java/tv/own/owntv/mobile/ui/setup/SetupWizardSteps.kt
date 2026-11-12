@@ -34,7 +34,6 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import kotlinx.coroutines.launch
 import org.koin.compose.koinInject
-import tv.own.owntv.core.brand.AppIcon
 import tv.own.owntv.core.database.entity.SourceEntity
 import tv.own.owntv.core.i18n.LocaleStore
 import tv.own.owntv.core.i18n.SupportedLocales
@@ -44,12 +43,10 @@ import tv.own.owntv.core.theme.FontCustomization
 import tv.own.owntv.core.theme.UiFontScale
 import tv.own.owntv.core.theme.UiZoom
 import tv.own.owntv.mobile.R
-import tv.own.owntv.mobile.ui.components.BrandMark
 import tv.own.owntv.mobile.ui.components.MobileBottomSheet
 import tv.own.owntv.mobile.ui.components.MobileIcons
 import tv.own.owntv.mobile.ui.components.sheetListHeight
 import tv.own.owntv.mobile.ui.profiles.ProfileAvatar
-import tv.own.owntv.mobile.ui.screens.settings.AppIconSheet
 import tv.own.owntv.mobile.ui.screens.settings.RemoteSourceSheet
 import tv.own.owntv.mobile.ui.screens.settings.SettingsChoice
 import tv.own.owntv.mobile.ui.screens.settings.StageChoiceSheet
@@ -100,10 +97,8 @@ fun DisplaySizeStep(onNext: () -> Unit, onBack: () -> Unit) {
     val scope = rememberCoroutineScope()
     val zoom by settings.uiZoomPercent.collectAsStateWithLifecycle(UiZoom.DEFAULT)
     val fonts by settings.fontCustomization.collectAsStateWithLifecycle(FontCustomization())
-    val appIcon by settings.appIcon.collectAsStateWithLifecycle(AppIcon.DEFAULT)
     var pendingLowZoom by remember { mutableStateOf<Int?>(null) }
     var lowZoomAccepted by remember { mutableStateOf(zoom < UiZoom.LOW_RAM_WARN) }
-    var pickIcon by remember { mutableStateOf(false) }
     val setZoom: (Int) -> Unit = { raw ->
         val pct = UiZoom.clamp(raw)
         if (pct < UiZoom.LOW_RAM_WARN && !lowZoomAccepted) pendingLowZoom = pct else scope.launch { settings.setUiZoomPercent(pct) }
@@ -142,12 +137,6 @@ fun DisplaySizeStep(onNext: () -> Unit, onBack: () -> Unit) {
                 plusEnabled = fonts.sizePercent < UiFontScale.MAX,
             )
         }
-        StageSettingRow(
-            title = stringResource(R.string.settings_app_icon),
-            icon = MobileIcons.Palette,
-            subtitle = stringResource(R.string.setup_line_app_icon_mobile),
-            onClick = { pickIcon = true },
-        ) { AppIconSwatches(appIcon) }
         // The sample (W2): a row's own type at the size it will really be.
         val palette = LocalStagePalette.current
         Row(
@@ -165,10 +154,6 @@ fun DisplaySizeStep(onNext: () -> Unit, onBack: () -> Unit) {
         }
     }
 
-    // No restart question: nothing is on the home screen yet, and the pick applies once the app is in the background.
-    if (pickIcon) {
-        AppIconSheet(chosen = appIcon, onPick = { scope.launch { settings.setAppIcon(it) } }, onDismiss = { pickIcon = false }, askRestart = false)
-    }
     pendingLowZoom?.let { target ->
         StageConfirmSheet(
             title = stringResource(R.string.settings_low_zoom_warning_title),
@@ -180,23 +165,6 @@ fun DisplaySizeStep(onNext: () -> Unit, onBack: () -> Unit) {
             },
             onDismiss = { pendingLowZoom = null },
         )
-    }
-}
-
-/** The App icon row's value (W2): five icons from the chosen one's set, the chosen one ringed. */
-@Composable
-private fun AppIconSwatches(chosen: AppIcon) {
-    val accent = stageAccent.accent
-    val shown = (AppIcon.entries.take(5) + chosen).distinct().takeLast(5)
-    Row(horizontalArrangement = Arrangement.spacedBy(4.dp), verticalAlignment = Alignment.CenterVertically) {
-        shown.forEach { icon ->
-            Box(
-                Modifier
-                    .size(18.dp)
-                    .then(if (icon == chosen) Modifier.border(1.5.dp, accent, RoundedCornerShape(6.dp)) else Modifier),
-                contentAlignment = Alignment.Center,
-            ) { BrandMark(icon, 16.dp, Modifier.clip(RoundedCornerShape(5.dp)), followAccent = false) }
-        }
     }
 }
 

@@ -558,8 +558,6 @@ private fun appSections(vm: SettingsViewModel): List<SettingSection> {
     val s = vm.settings
     val localeStore: LocaleStore = koinInject()
     val tag = localeStore.currentTag.pref("")
-    val appIcon = s.appIcon.pref(tv.own.owntv.core.brand.AppIcon.DEFAULT)
-    val brandAccent = s.brandAccentTriangle.pref(true)
     val mode = vm.startupMode.pref(StartupMode.HOME)
     val channel = vm.startupChannel.pref(null)
     val updateOnStart = s.updateCheckOnStart.pref(true)
@@ -586,15 +584,6 @@ private fun appSections(vm: SettingsViewModel): List<SettingSection> {
                     "tab_LANGUAGE", MobileIcons.Translate, stringResource(R.string.settings_language), stringResource(R.string.settings_language_description),
                     localeLabel(tag), SettingsLeaf.LANGUAGE.route,
                 ),
-                SettingItem(
-                    "app_icon", MobileIcons.Palette, stringResource(R.string.settings_app_icon), stringResource(R.string.settings_line_app_icon),
-                    SettingValue.Opens(stringResource(appIcon.label)),
-                    sheet = { dismiss -> AppIconSheet(chosen = appIcon, onPick = { vm.edit { setAppIcon(it) } }, onDismiss = dismiss) },
-                ),
-                switchItem(
-                    "brand_accent", MobileIcons.Palette, stringResource(R.string.settings_brand_accent),
-                    stringResource(R.string.settings_line_brand_accent), brandAccent,
-                ) { vm.edit { setBrandAccentTriangle(it) } },
                 choiceItem(
                     "app_startup", MobileIcons.Home, g, stringResource(R.string.settings_app_startup),
                     stringResource(R.string.settings_app_startup_description), stringResource(R.string.settings_help_startup),

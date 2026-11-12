@@ -10,6 +10,7 @@
 ## Unreleased
 
 ### New features
+- **🅺 K logo on its white tile, so it shows on dark screens; App icon and Accent-coloured logo settings removed**
 - **🅺 Now called KueTV, with the KayKue K logo (icon, banner, launch screen, menus)**
 - **☁️ Google Drive: back up, restore and copy recordings (free 15 GB)**
 - **🧩 Stremio add-ons: Add-on streams for films and episodes**
