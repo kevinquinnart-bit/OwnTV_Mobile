@@ -287,6 +287,7 @@ private fun EpgSourceSheet(
     var showRefresh by remember { mutableStateOf(false) }
     var showManualDays by remember { mutableStateOf(false) }
     var showPlaylists by remember { mutableStateOf(false) }
+    var showFreeGuides by remember { mutableStateOf(false) }
 
     MobileBottomSheet(onDismissRequest = onDismiss, stage = true) {
         tv.own.owntv.mobile.ui.stage.StageSheetHeader(stringResource(
@@ -320,6 +321,13 @@ private fun EpgSourceSheet(
             MobileButton(
                 text = stringResource(R.string.settings_epg_sources_fill_playlist),
                 onClick = { showPlaylists = true },
+                style = MobileButtonStyle.SECONDARY,
+                modifier = Modifier.fillMaxWidth(),
+            )
+            // Kevin's copy: a free UK or Irish guide, filled in with one tap. Same three as the TV app.
+            MobileButton(
+                text = stringResource(R.string.kevin_free_guides),
+                onClick = { showFreeGuides = true },
                 style = MobileButtonStyle.SECONDARY,
                 modifier = Modifier.fillMaxWidth(),
             )
@@ -376,6 +384,30 @@ private fun EpgSourceSheet(
             onSelect = { refresh = EpgRefresh(EpgAutoRefresh.MANUAL, it) },
             onDismiss = { showManualDays = false },
         )
+    }
+
+    if (showFreeGuides) {
+        MobileBottomSheet(onDismissRequest = { showFreeGuides = false }, stage = true) {
+            tv.own.owntv.mobile.ui.stage.StageSheetHeader(stringResource(R.string.kevin_free_guides))
+            Text(
+                text = stringResource(R.string.kevin_free_guides_line),
+                style = tv.own.owntv.mobile.ui.stage.stageText(13.5f, 500),
+                color = tv.own.owntv.mobile.ui.stage.LocalStagePalette.current.dim,
+                modifier = Modifier.padding(horizontal = MobileDimens.ScreenPaddingH),
+            )
+            FreeGuide.entries.forEach { guide ->
+                val label = stringResource(guide.label)
+                tv.own.owntv.mobile.ui.stage.StageSettingRow(
+                    title = label,
+                    subtitle = guide.url,
+                    onClick = {
+                        showFreeGuides = false
+                        url = guide.url
+                        name = label
+                    },
+                ) { tv.own.owntv.mobile.ui.stage.StageRadio(guide.url == url) }
+            }
+        }
     }
 
     if (showPlaylists) {
@@ -439,3 +471,10 @@ private fun epgAutoRefreshLabel(mode: EpgAutoRefresh): String = stringResource(
         EpgAutoRefresh.MANUAL -> R.string.settings_sources_refresh_manual
     },
 )
+
+/** Kevin's copy: free XMLTV guides for the channels Kevin watches, matched to the playlist by name. */
+internal enum class FreeGuide(@androidx.annotation.StringRes val label: Int, val url: String) {
+    UK(R.string.kevin_free_guide_uk, "https://epgshare01.online/epgshare01/epg_ripper_UK1.xml.gz"),
+    FREEVIEW(R.string.kevin_free_guide_freeview, "https://raw.githubusercontent.com/dp247/Freeview-EPG/master/epg.xml"),
+    IRELAND(R.string.kevin_free_guide_ireland, "https://epgshare01.online/epgshare01/epg_ripper_IE1.xml.gz"),
+}

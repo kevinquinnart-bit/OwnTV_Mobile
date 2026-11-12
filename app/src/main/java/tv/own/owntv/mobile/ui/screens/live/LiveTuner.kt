@@ -412,6 +412,29 @@ class LiveTuner(
     private val _nowNext = MutableStateFlow<EpgNowNext?>(null)
     val nowNext: StateFlow<EpgNowNext?> = _nowNext
 
+    // Kevin's copy: the programme of the playing channel was read when the channel was opened and not
+    // again, so once it ended the player and the preview kept showing it until another channel was
+    // picked. Just after each minute turns, a finished programme drops the channel's cached guide and
+    // the channel is read again. Same as the TV app.
+    init {
+        scope.launch {
+            while (true) {
+                kotlinx.coroutines.delay(MINUTE_MS - System.currentTimeMillis() % MINUTE_MS + TURNOVER_GRACE_MS)
+                val ch = _channel.value ?: continue
+                val epg = _nowNext.value ?: continue
+                val now = System.currentTimeMillis()
+                val finished = epg.now?.let { it.stopMs <= now } ?: (epg.next?.let { it.startMs <= now } ?: false)
+                if (!finished) continue
+                epgReader.invalidate(ch.id)
+                // The guide is matched on the channel as stored, not the tidied name shown on screen.
+                val stored = withContext(Dispatchers.IO) { channelDao.getById(ch.id) } ?: ch
+                val fresh = runCatching { epgReader.nowNext(stored, custom.value, settings.epgOffsetMinutes.first()) }.getOrNull()
+                // Only if the same channel is still on: a channel change in the meantime set its own.
+                if (_channel.value?.id == ch.id) _nowNext.value = fresh
+            }
+        }
+    }
+
     private val _replaying = MutableStateFlow(false)
 
     /**
@@ -760,6 +783,13 @@ class LiveTuner(
             .filter { tv.own.owntv.core.live.isChannelVisible(it, custom.value, emptySet(), null) }
             .ifEmpty { listOf(channel) }
 
+    // ---- Kevin's copy: step down to a lighter version of the channel when it keeps buffering ----
+    // Three stalls of a second or more within two minutes, or one stall of eight seconds, moves to the
+    // channel's next version down (FHD → HD → the unlabelled one → SD). So does a version that has not
+    // started playing 12 seconds after it was opened. A rewind or a catch-up programme is left alone.
+    // Opening a channel starts again from its best. When the last version fails too, it goes back round
+    // to the best and works down again, for as long as the channel stays on. Every switch is written to
+    // More › Error log, so it can be checked afterwards. Same rules as the TV app.
     private var variantVersions: List<ChannelEntity> = emptyList()
     private var variantAt = 0
     private var variantShownName = ""
@@ -767,17 +797,35 @@ class LiveTuner(
     private var variantHasPlayed = false
     private var variantBufferingSince = 0L
     private var variantLongStall: kotlinx.coroutines.Job? = null
+    private var variantStartTimer: kotlinx.coroutines.Job? = null
 
     private fun armVariantWatch(versions: List<ChannelEntity>, shownName: String) {
         variantVersions = if (versions.size > 1) versions else emptyList()
         variantAt = 0
         variantShownName = shownName
         resetVariantStalls()
+        armVariantStart()
     }
 
     private fun disarmVariantWatch() {
         variantVersions = emptyList()
         resetVariantStalls()
+        variantStartTimer?.cancel()
+        variantStartTimer = null
+    }
+
+    /** A version that has not played [VARIANT_START_MS] after it was opened gives way to the next. */
+    private fun armVariantStart() {
+        variantStartTimer?.cancel()
+        variantStartTimer = null
+        if (variantVersions.isEmpty()) return
+        variantStartTimer = scope.launch {
+            kotlinx.coroutines.delay(VARIANT_START_MS)
+            // A channel promoted from a preview that was already playing never reports a fresh start,
+            // so the engines are asked directly before calling it a version that did not start.
+            if (exo.isPlaying.value || player.isPlaying.value) variantHasPlayed = true
+            if (!variantHasPlayed) stepDownVariant(R.string.kevin_variant_reason_no_start)
+        }
     }
 
     private fun resetVariantStalls() {
@@ -792,37 +840,54 @@ class LiveTuner(
         if (variantVersions.isEmpty()) return
         val now = android.os.SystemClock.elapsedRealtime()
         if (playing && !buffering) {
-            if (variantBufferingSince > 0L && now - variantBufferingSince >= VARIANT_STALL_MS) {
+            // Only a stall after the picture has played counts; the first load is not a stall.
+            if (variantHasPlayed && variantBufferingSince > 0L && now - variantBufferingSince >= VARIANT_STALL_MS) {
                 variantStalls.addLast(now)
                 while (variantStalls.isNotEmpty() && now - variantStalls.first() > VARIANT_STALL_WINDOW_MS) variantStalls.removeFirst()
             }
             variantHasPlayed = true
+            variantStartTimer?.cancel()
             variantBufferingSince = 0L
             variantLongStall?.cancel()
-            if (variantStalls.size >= VARIANT_STALLS_TO_STEP) stepDownVariant()
+            if (variantStalls.size >= VARIANT_STALLS_TO_STEP) stepDownVariant(R.string.kevin_variant_reason_buffering)
             return
         }
-        if (buffering && variantHasPlayed && variantBufferingSince == 0L) {
+        // Eight seconds of buffering moves on, whether or not the picture has played yet: a channel
+        // opened from a preview that was already playing never reports a fresh start.
+        if (buffering && variantBufferingSince == 0L) {
             variantBufferingSince = now
             variantLongStall?.cancel()
             variantLongStall = scope.launch {
                 kotlinx.coroutines.delay(VARIANT_LONG_STALL_MS)
-                if (variantBufferingSince > 0L) stepDownVariant()
+                if (variantBufferingSince > 0L) stepDownVariant(R.string.kevin_variant_reason_buffering)
             }
         }
     }
 
-    private fun stepDownVariant() {
+    private fun stepDownVariant(@androidx.annotation.StringRes reason: Int) {
         if (_replaying.value || timeshift.isRewound) { resetVariantStalls(); return }
-        if (variantAt + 1 >= variantVersions.size) { resetVariantStalls(); return }
-        variantAt++
+        if (variantVersions.size < 2) { resetVariantStalls(); return }
+        val from = variantVersions[variantAt]
+        // Past the last version it goes back to the best rather than stopping there.
+        variantAt = (variantAt + 1) % variantVersions.size
         val next = variantVersions[variantAt]
         resetVariantStalls()
         android.util.Log.i(VARIANT_TAG, "variant step down to ${next.id} (${variantAt + 1} of ${variantVersions.size})")
+        // Into More › Error log: which version, to which, and why.
+        runCatching {
+            tv.own.owntv.player.PlaybackErrorLog.event(
+                context,
+                engine = if (exo.isPlaying.value || exo.buffering.value) ENGINE_EXO else ENGINE_MPV,
+                live = true,
+                reason = tv.own.owntv.player.PlayerFailureReason.LIVE_FALLBACK,
+                detail = context.getString(R.string.kevin_variant_switched, from.name, next.name, context.getString(reason)),
+            )
+        }
         live.launch {
             val source = withContext(Dispatchers.IO) { sourceDao.getById(next.sourceId) }
             live.start(next.copy(name = variantShownName), source)
         }
+        armVariantStart()
     }
 
     init {
@@ -1287,7 +1352,12 @@ class LiveTuner(
         const val VARIANT_STALL_WINDOW_MS = 120_000L
         const val VARIANT_STALLS_TO_STEP = 3
         const val VARIANT_LONG_STALL_MS = 8_000L
+        const val VARIANT_START_MS = 12_000L
+        const val MINUTE_MS = 60_000L
+        const val TURNOVER_GRACE_MS = 1_000L
         const val VARIANT_TAG = "LiveVariant"
+        const val ENGINE_EXO = "exo"
+        const val ENGINE_MPV = "mpv"
 
         /** How long Channel +/− waits for the user to stop pressing before it opens a stream — the
          *  television's figure. */

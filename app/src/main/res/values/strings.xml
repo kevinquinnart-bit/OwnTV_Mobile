@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources>
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <!-- Kevin's copy — Clear favourites (More › Favourites): the bin, the picker and its four confirmations. Same wording as the television. -->
     <string name="more_fav_clear">Clear favourites</string>
     <string name="more_fav_clear_choose">Choose what to remove for this profile. Playlists and history are not affected.</string>
@@ -8,4 +8,14 @@
     <string name="more_fav_clear_confirm_movies">Clear movie favourites?</string>
     <string name="more_fav_clear_confirm_series">Clear series favourites?</string>
     <string name="more_fav_clear_confirm_all">Clear all favourites?</string>
+    <!-- More › Error log (Kevin's copy): a live channel moved to another version of itself. -->
+    <string name="kevin_variant_switched"><xliff:g id="from">%1$s</xliff:g> to <xliff:g id="to">%2$s</xliff:g>: <xliff:g id="why">%3$s</xliff:g></string>
+    <string name="kevin_variant_reason_buffering">kept buffering</string>
+    <string name="kevin_variant_reason_no_start">did not start within 12 seconds</string>
+    <!-- Settings › EPG Sources › Add (Kevin's copy): a free guide filled in with one tap. Channels are matched to it by name. -->
+    <string name="kevin_free_guides">Free guides</string>
+    <string name="kevin_free_guides_line">Fill in a free UK or Irish guide</string>
+    <string name="kevin_free_guide_uk">UK: Sky, Freeview and more</string>
+    <string name="kevin_free_guide_freeview">UK: Freeview, every region</string>
+    <string name="kevin_free_guide_ireland">Ireland: RTÉ, TG4, Virgin Media</string>
 </resources>

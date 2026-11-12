@@ -10,6 +10,7 @@
 ## Unreleased
 
 ### New features
+- **📅 Free UK and Irish guides in Add guide (one tap fills it in)**
 - **🎭 Stage design: the television's new look on phone and tablet**
 - **🎨 Pixel app icon and Plus Jakarta Sans, the new default font**
 - **🔊 Volume swipe controls the phone's volume**
@@ -30,6 +31,9 @@
 - **🗂️ Downloads and recordings whose file is gone say "File missing"**
 
 ### Fixes
+- **🔁 Channel versions: a version that will not start moves on, and after the last one it goes back to the best**
+- **📺 Sky Sports NOW TV copies count as versions of the regular channel**
+- **🕐 The playing channel's programme updates when the last one ends**
 - **📡 Pause and rewind live TV: a channel comes back by itself after a network outage**
 - **😴 The screen no longer turns off when a film stops to buffer**
 - **Custom categories in the player's channel list and the Multiview picker**
