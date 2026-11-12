@@ -1,4 +1,7 @@
 [versions]
+# Kevin's copy: the same versions core ships, declared so this app can use them directly (Drive, add-ons, library links).
+room = "2.8.5"
+okhttp = "5.5.0"
 # --- Build toolchain ---
 # Kept in lockstep with OwnTV_Core and the TV app: all three compile the same core sources through a
 # composite build during local development, and Gradle cannot mix two AGP/Kotlin versions there.
@@ -71,6 +74,8 @@ owntvCore = "1.0.67"
 # naming their own would be two copies of a native library and a packaging conflict.
 
 [libraries]
+androidx-room-runtime = { group = "androidx.room", name = "room-runtime", version.ref = "room" }
+okhttp = { group = "com.squareup.okhttp3", name = "okhttp", version.ref = "okhttp" }
 # The shared engine, from its own repository. Everything below the UI — database, sync, EPG, backup,
 # settings, strings — comes from here; this repo adds the phone/tablet shell only.
 owntv-core = { group = "tv.own.owntv", name = "core", version.ref = "owntvCore" }

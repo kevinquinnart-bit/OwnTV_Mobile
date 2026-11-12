@@ -2,6 +2,7 @@ package tv.own.owntv.mobile.ui.stage
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyRow
@@ -168,11 +169,20 @@ fun StageRatingChip(rating: String, modifier: Modifier = Modifier) {
  * 1.5 dp ink rim, the name under it (10.5 / 600 muted, two lines). Home's ⓘ sheet and the movie page.
  */
 @Composable
-fun StageCastRow(cast: List<CastMember>, modifier: Modifier = Modifier, contentPadding: PaddingValues = PaddingValues()) {
+fun StageCastRow(
+    cast: List<CastMember>,
+    modifier: Modifier = Modifier,
+    contentPadding: PaddingValues = PaddingValues(),
+    // Kevin's copy: a tap on a picture lists that actor's other titles in the library.
+    onClick: ((CastMember) -> Unit)? = null,
+) {
     val palette = LocalStagePalette.current
     LazyRow(modifier, horizontalArrangement = Arrangement.spacedBy(12.dp), contentPadding = contentPadding) {
         items(cast) { member ->
-            Column(Modifier.width(56.dp), horizontalAlignment = Alignment.CenterHorizontally) {
+            Column(
+                Modifier.width(56.dp).then(if (onClick != null) Modifier.clickable { onClick(member) } else Modifier),
+                horizontalAlignment = Alignment.CenterHorizontally,
+            ) {
                 AsyncImage(
                     MetadataImages.profile(member.profilePath),
                     contentDescription = null,

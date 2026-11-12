@@ -187,6 +187,24 @@
 1	url	app/src/main/java/tv/own/owntv/mobile/ui/screens/home/TrendingHero.kt	w500
 6	technical	app/src/main/java/tv/own/owntv/mobile/ui/screens/home/TrendingHero.kt	·
 1	file-path	app/src/main/java/tv/own/owntv/mobile/ui/screens/library/DetailViewModel.kt	${StorageAccess.sanitize(film.name)}.
+4	technical	app/src/main/java/tv/own/owntv/mobile/ui/screens/library/LibraryLinks.kt	%
+1	technical	app/src/main/java/tv/own/owntv/mobile/ui/screens/library/LibraryLinks.kt	:
+1	technical	app/src/main/java/tv/own/owntv/mobile/ui/screens/library/LibraryLinks.kt	:kids
+2	technical	app/src/main/java/tv/own/owntv/mobile/ui/screens/library/LibraryLinks.kt	JOIN metadata_match mm ON mm.tmdbId = mc.tmdbId AND mm.type = ?
+1	technical	app/src/main/java/tv/own/owntv/mobile/ui/screens/library/LibraryLinks.kt	OR
+1	technical	app/src/main/java/tv/own/owntv/mobile/ui/screens/library/LibraryLinks.kt	ORDER BY rating IS NULL, rating DESC, id DESC LIMIT $LIMIT
+1	sql	app/src/main/java/tv/own/owntv/mobile/ui/screens/library/LibraryLinks.kt	SELECT DISTINCT mm.localKey, mc.genresJson, mc.rating FROM metadata_cache mc
+1	sql	app/src/main/java/tv/own/owntv/mobile/ui/screens/library/LibraryLinks.kt	SELECT DISTINCT mm.localKey, mc.rating FROM metadata_cache mc
+1	sql	app/src/main/java/tv/own/owntv/mobile/ui/screens/library/LibraryLinks.kt	SELECT id FROM ${kind.table} WHERE categoryId = ? AND id != ?
+1	sql	app/src/main/java/tv/own/owntv/mobile/ui/screens/library/LibraryLinks.kt	SELECT id FROM ${kind.table} WHERE sourceId = ? AND (remoteId = ? OR (remoteId IS NULL AND name = ?)) LIMIT 1
+1	technical	app/src/main/java/tv/own/owntv/mobile/ui/screens/library/LibraryLinks.kt	WHERE mc.type = ? AND ($where) LIMIT $SCAN_LIMIT
+1	technical	app/src/main/java/tv/own/owntv/mobile/ui/screens/library/LibraryLinks.kt	WHERE mc.type = ? AND mc.castJson LIKE ? LIMIT $SCAN_LIMIT
+1	technical	app/src/main/java/tv/own/owntv/mobile/ui/screens/library/LibraryLinks.kt	mc.genresJson LIKE ?
+1	technical	app/src/main/java/tv/own/owntv/mobile/ui/screens/library/LibraryLinks.kt	movie
+1	technical	app/src/main/java/tv/own/owntv/mobile/ui/screens/library/LibraryLinks.kt	movies
+1	technical	app/src/main/java/tv/own/owntv/mobile/ui/screens/library/LibraryLinks.kt	series
+1	technical	app/src/main/java/tv/own/owntv/mobile/ui/screens/library/LibraryLinks.kt	tv
+1	technical	app/src/main/java/tv/own/owntv/mobile/ui/screens/library/LibraryLinksUi.kt	${it.tab}_${it.id}
 1	technical	app/src/main/java/tv/own/owntv/mobile/ui/screens/library/LibraryScreen.kt	★
 1	technical	app/src/main/java/tv/own/owntv/mobile/ui/screens/library/LibraryTitleCard.kt	card
 3	empty	app/src/main/java/tv/own/owntv/mobile/ui/screens/library/LibraryViewModel.kt	\0
@@ -202,6 +220,8 @@
 1	technical	app/src/main/java/tv/own/owntv/mobile/ui/screens/library/SeriesPage.kt	g_
 1	technical	app/src/main/java/tv/own/owntv/mobile/ui/screens/library/SeriesPage.kt	grid
 2	technical	app/src/main/java/tv/own/owntv/mobile/ui/screens/library/SeriesPage.kt	header
+1	technical	app/src/main/java/tv/own/owntv/mobile/ui/screens/library/SeriesPage.kt	kevin_links
+1	technical	app/src/main/java/tv/own/owntv/mobile/ui/screens/library/SeriesPage.kt	links
 1	technical	app/src/main/java/tv/own/owntv/mobile/ui/screens/library/SeriesPage.kt	list_top
 1	preference-key	app/src/main/java/tv/own/owntv/mobile/ui/screens/library/SeriesPage.kt	mark_watched
 1	preference-key	app/src/main/java/tv/own/owntv/mobile/ui/screens/library/SeriesPage.kt	play_external

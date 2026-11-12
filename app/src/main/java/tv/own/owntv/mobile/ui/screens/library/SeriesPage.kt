@@ -129,6 +129,7 @@ internal fun SeriesPage(
     vm: DetailViewModel,
     onPlay: () -> Unit,
     modifier: Modifier = Modifier,
+    onOpenItem: (LibraryTab, Long) -> Unit = { _, _ -> },
 ) {
     val show by vm.show.collectAsStateWithLifecycle()
     val page by vm.titlePage.collectAsStateWithLifecycle()
@@ -183,6 +184,7 @@ internal fun SeriesPage(
     var menuOpen by remember { mutableStateOf(false) }
     var orderOpen by remember { mutableStateOf(false) }
     var optionsFor by remember { mutableStateOf<EpisodeEntity?>(null) }
+    var personOpen by remember { mutableStateOf<String?>(null) }
     val resumeGate = rememberResumeGate()
 
     val activeSeason = season ?: seasons.firstOrNull()
@@ -344,6 +346,17 @@ internal fun SeriesPage(
                 )
             }
         }
+        // Kevin's copy: the cast (a tap lists an actor's other titles) and titles like this one, as on the TV.
+        item(key = "kevin_links", contentType = "links") {
+            val cast = remember(meta?.castJson) { tv.own.owntv.core.metadata.MetadataCast.parse(meta?.castJson) }
+            Column(Modifier.padding(horizontal = 18.dp)) {
+                if (cast.isNotEmpty()) {
+                    tv.own.owntv.mobile.ui.stage.StageLabel(stringResource(R.string.content_media_cast), Modifier.padding(top = 22.dp, bottom = 10.dp))
+                    tv.own.owntv.mobile.ui.stage.StageCastRow(cast, onClick = { personOpen = it.name })
+                }
+                MoreLikeThisRow(key = series.id to meta?.genresJson, load = vm::moreLikeThis, onOpen = { onOpenItem(it.tab, it.id) })
+            }
+        }
         item(key = "bottom") { Spacer(Modifier.height(22.dp)) }
     }
 
@@ -374,6 +387,14 @@ internal fun SeriesPage(
             onHideWatched = { vm.setHideWatched(!hideWatched) },
             onChange = vm::setOrder,
             onDismiss = { orderOpen = false },
+        )
+    }
+    personOpen?.let { person ->
+        WithPersonSheet(
+            person = person,
+            load = { vm.withPerson(person) },
+            onOpen = { personOpen = null; onOpenItem(it.tab, it.id) },
+            onDismiss = { personOpen = null },
         )
     }
     optionsFor?.let { ep ->

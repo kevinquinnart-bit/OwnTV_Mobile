@@ -325,6 +325,9 @@ dependencies {
     // The shared playback engine. It renders nothing itself, which is exactly why the same engine
     // serves the TV HUD and this app's touch controls. Always on core's version.
     implementation(libs.owntv.player.core)
+    // Kevin's copy: used directly by Google Drive, Stremio add-ons and More like this; core's own versions.
+    implementation(libs.androidx.room.runtime)
+    implementation(libs.okhttp)
     // libmpv is NOT declared here. `:player-core` exposes it as `api`, so it arrives on this app's
     // compile classpath with core — which it must, because `OwnTVPlayer`'s supertype is
     // `MPVLib.EventObserver`. It was declared explicitly while the pin was older than `1.0.6`, where

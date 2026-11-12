@@ -24,6 +24,6 @@ fun DetailScreen(
     LaunchedEffect(tab, itemId) { vm.open(tab, itemId) }
     when (tab) {
         LibraryTab.MOVIES -> MoviePage(vm = vm, onPlay = onPlay, onOpenItem = onOpenItem, onOpenSearch = onOpenSearch, modifier = modifier)
-        LibraryTab.SERIES -> SeriesPage(vm = vm, onPlay = onPlay, modifier = modifier)
+        LibraryTab.SERIES -> SeriesPage(vm = vm, onPlay = onPlay, modifier = modifier, onOpenItem = onOpenItem)
     }
 }

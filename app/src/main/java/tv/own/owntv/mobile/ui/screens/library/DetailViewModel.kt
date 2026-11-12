@@ -300,6 +300,49 @@ class DetailViewModel(
         }
     }
 
+    // ---- Kevin's copy: More like this, and an actor's other titles — the TV app's rules ----
+
+    /** A title found in the library, for a poster row or a list. */
+    data class LinkItem(val tab: LibraryTab, val id: Long, val name: String, val posterUrl: String?, val rating: Double?, val year: Int?)
+
+    private suspend fun profileSourceIds(): List<Long> {
+        val pid = profileId.value.takeIf { it >= 0 } ?: return emptyList()
+        return runCatching {
+            org.koin.core.context.GlobalContext.get().get<tv.own.owntv.core.database.dao.SourceDao>().sourceIdsForProfile(pid)
+        }.getOrDefault(emptyList())
+    }
+
+    private suspend fun movieItems(ids: List<Long>): List<LinkItem> {
+        if (ids.isEmpty()) return emptyList()
+        val byId = movieDao.getByIds(ids).associateBy { it.id }
+        return ids.mapNotNull { byId[it] }.map { LinkItem(LibraryTab.MOVIES, it.id, it.name, it.posterUrl, it.rating, it.year) }
+    }
+
+    private suspend fun showItems(ids: List<Long>): List<LinkItem> {
+        if (ids.isEmpty()) return emptyList()
+        val byId = seriesDao.getSeriesByIds(ids).associateBy { it.id }
+        return ids.mapNotNull { byId[it] }.map { LinkItem(LibraryTab.SERIES, it.id, it.name, it.posterUrl, it.rating, it.year) }
+    }
+
+    /** Library titles like the one open: most genres shared first, topped up from its category. */
+    suspend fun moreLikeThis(): List<LinkItem> {
+        val meta = _titlePage.value.meta
+        val sources = profileSourceIds()
+        _movie.value?.let { film ->
+            return movieItems(LibraryLinks.moreLikeThis(LibraryLinks.Kind.MOVIE, film.id, film.categoryId, meta?.genresJson, sources))
+        }
+        val show = _show.value ?: return emptyList()
+        return showItems(LibraryLinks.moreLikeThis(LibraryLinks.Kind.SERIES, show.id, show.categoryId, meta?.genresJson, sources))
+    }
+
+    /** Films and shows in the library whose fetched details name [person] in the cast. */
+    suspend fun withPerson(person: String): List<LinkItem> {
+        val sources = profileSourceIds()
+        val films = movieItems(LibraryLinks.withPerson(LibraryLinks.Kind.MOVIE, person, _movie.value?.id, sources))
+        val shows = showItems(LibraryLinks.withPerson(LibraryLinks.Kind.SERIES, person, _show.value?.id, sources))
+        return films + shows
+    }
+
     fun selectSeason(seasonNumber: Int) {
         _season.value = seasonNumber
     }

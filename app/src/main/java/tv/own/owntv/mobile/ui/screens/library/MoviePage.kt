@@ -135,6 +135,7 @@ internal fun MoviePage(
     // actions find them the moment it opens (and it names the film's category in the menu's header).
     val categories by library.categories.collectAsStateWithLifecycle()
     var menuOpen by remember { mutableStateOf(false) }
+    var personOpen by remember { mutableStateOf<String?>(null) }
     val resumeGate = rememberResumeGate()
 
     val title = HeadlineTitle.of(film.name)
@@ -236,8 +237,10 @@ internal fun MoviePage(
         }
         if (cast.isNotEmpty()) {
             StageLabel(stringResource(R.string.content_media_cast), Modifier.padding(top = 22.dp, bottom = 10.dp))
-            StageCastRow(cast)
+            StageCastRow(cast, onClick = { personOpen = it.name })
         }
+        // Kevin's copy: titles like this one from the library, as on the TV.
+        MoreLikeThisRow(key = film.id to meta?.genresJson, load = vm::moreLikeThis, onOpen = { onOpenItem(it.tab, it.id) })
         if (page.more.isNotEmpty()) {
             StageLabel(stringResource(R.string.content_vod_more_in, page.categoryName.orEmpty()), Modifier.padding(top = 22.dp, bottom = 10.dp))
             Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
@@ -254,6 +257,15 @@ internal fun MoviePage(
                 repeat(MORE_COLUMNS - page.more.size) { Box(Modifier.weight(1f)) }
             }
         }
+    }
+
+    personOpen?.let { person ->
+        WithPersonSheet(
+            person = person,
+            load = { vm.withPerson(person) },
+            onOpen = { personOpen = null; onOpenItem(it.tab, it.id) },
+            onDismiss = { personOpen = null },
+        )
     }
 
     if (menuOpen) {
