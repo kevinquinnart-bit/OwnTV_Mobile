@@ -24,7 +24,7 @@
     <string name="kevin_with_person_none">Nothing else with <xliff:g id="person">%1$s</xliff:g> found yet. A title is found once its details have been loaded, so this list grows as you browse.</string>
     <!-- Kevin's copy: Google Drive (More › Backup & Restore) and Stremio add-ons, worded as on the TV. -->
     <string name="kevin_drive">Google Drive</string>
-    <string name="kevin_drive_backup_place">Google Drive › OwnTV › Backups › <xliff:g id="file">%1$s</xliff:g></string>
+    <string name="kevin_drive_backup_place">Google Drive › KueTV › Backups › <xliff:g id="file">%1$s</xliff:g></string>
     <string name="kevin_drive_not_set_up">Google Drive isn\'t set up in this copy of the app yet.</string>
     <string name="kevin_drive_sign_in_title">Sign in to Google Drive</string>
     <string name="kevin_drive_sign_in_waiting">Waiting for you to finish on the phone…</string>

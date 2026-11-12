@@ -10,6 +10,7 @@
 ## Unreleased
 
 ### New features
+- **🅺 Now called KueTV, with the KayKue K logo (icon, banner, launch screen, menus)**
 - **☁️ Google Drive: back up, restore and copy recordings (free 15 GB)**
 - **🧩 Stremio add-ons: Add-on streams for films and episodes**
 - **🎬 More like this, and tap an actor for their other titles**

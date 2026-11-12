@@ -91,7 +91,6 @@
 1	technical	app/src/main/java/tv/own/owntv/mobile/drive/GoogleDrive.kt	Drive $code $reason
 1	technical	app/src/main/java/tv/own/owntv/mobile/drive/GoogleDrive.kt	KevinDrive
 1	technical	app/src/main/java/tv/own/owntv/mobile/drive/GoogleDrive.kt	Location
-1	technical	app/src/main/java/tv/own/owntv/mobile/drive/GoogleDrive.kt	OwnTV
 1	technical	app/src/main/java/tv/own/owntv/mobile/drive/GoogleDrive.kt	Range
 1	technical	app/src/main/java/tv/own/owntv/mobile/drive/GoogleDrive.kt	Recordings
 3	technical	app/src/main/java/tv/own/owntv/mobile/drive/GoogleDrive.kt	UTF-8
