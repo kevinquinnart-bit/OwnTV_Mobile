@@ -136,6 +136,7 @@ internal fun MoviePage(
     val categories by library.categories.collectAsStateWithLifecycle()
     var menuOpen by remember { mutableStateOf(false) }
     var personOpen by remember { mutableStateOf<String?>(null) }
+    var addonsOpen by remember { mutableStateOf(false) }
     val resumeGate = rememberResumeGate()
 
     val title = HeadlineTitle.of(film.name)
@@ -228,6 +229,13 @@ internal fun MoviePage(
                 style = if (download.deletes) StageButtonStyle.DANGER else StageButtonStyle.SECONDARY,
                 modifier = Modifier.weight(1f),
             )
+            // Kevin's copy: Stremio add-on streams for this film, as on the TV.
+            val addonLabel = stringResource(R.string.kevin_stremio_streams)
+            StageButton(
+                onClick = { addonsOpen = true },
+                icon = MobileIcons.AutoAwesome,
+                modifier = Modifier.semantics { contentDescription = addonLabel },
+            )
             val versions = stringResource(R.string.home_trending_all_versions)
             StageButton(
                 onClick = { onOpenSearch(film.canonicalTitle.ifBlank { title }) },
@@ -259,6 +267,14 @@ internal fun MoviePage(
         }
     }
 
+    if (addonsOpen) {
+        tv.own.owntv.mobile.stremio.StremioSheet(
+            type = "movie",
+            id = meta?.imdbId?.takeIf { it.startsWith("tt") },
+            onPlay = { stream -> addonsOpen = false; vm.playAddonStream(stream, title, onPlay) },
+            onDismiss = { addonsOpen = false },
+        )
+    }
     personOpen?.let { person ->
         WithPersonSheet(
             person = person,

@@ -85,7 +85,7 @@ private const val BACKUP_MIME = "application/octet-stream"
 private const val BACKUP_FILE_NAME = "owntv-backup.own"
 
 /** Where a backup goes once its contents are chosen: a picked file, another device by Remote, or the share sheet. */
-private enum class BackupTarget { FILE, REMOTE, SHARE }
+private enum class BackupTarget { FILE, REMOTE, SHARE, DRIVE }
 
 /**
  * More › Backup & Restore (M8-04): "Never backed up" (what lives only on this phone) or when the last backup
@@ -119,6 +119,16 @@ fun SettingsBackupPage(
     var restoreChooser by remember { mutableStateOf(false) }
     var remoteRestore by remember { mutableStateOf(false) }
     var remoteExport by remember { mutableStateOf(false) }
+    // Kevin's copy: Google Drive — needs the key built in and a sign-in before anything else.
+    var driveNotSetUp by remember { mutableStateOf(false) }
+    var driveSheet by remember { mutableStateOf(false) }
+    val withDrive: (() -> Unit) -> Unit = { go ->
+        if (!vm.busy) when {
+            !vm.driveState.configured -> driveNotSetUp = true
+            !vm.driveState.signedIn -> vm.startDriveSignIn()
+            else -> go()
+        }
+    }
     // Held while the document picker is in front: the user has already said what to export, and the
     // picker only decides where it goes.
     var chosen by remember { mutableStateOf<ExportRequest?>(null) }
@@ -180,6 +190,7 @@ fun SettingsBackupPage(
                 StageButton(onClick = { if (!vm.busy) exportTarget = BackupTarget.FILE }, text = stringResource(R.string.more_backup_file_tv_mobile), icon = MobileIcons.Folder, small = true, enabled = !vm.busy)
                 StageButton(onClick = { if (!vm.busy) exportTarget = BackupTarget.REMOTE }, text = stringResource(R.string.settings_backup_remote), icon = MobileIcons.Translate, small = true, enabled = !vm.busy)
                 StageButton(onClick = { if (!vm.busy) exportTarget = BackupTarget.SHARE }, text = stringResource(R.string.common_share), icon = MobileIcons.OpenInNew, small = true, enabled = !vm.busy)
+                StageButton(onClick = { withDrive { exportTarget = BackupTarget.DRIVE } }, text = stringResource(R.string.kevin_drive), icon = MobileIcons.Storage, small = true, enabled = !vm.busy)
             }
         }
         BackupCard(icon = MobileIcons.Refresh, title = stringResource(R.string.settings_backup_restore_action), onClick = { if (!vm.busy) restoreChooser = true }) {
@@ -208,6 +219,7 @@ fun SettingsBackupPage(
                         remoteExport = true
                         vm.exportRemote(request.sections, request.profileIds, request.password)
                     }
+                    BackupTarget.DRIVE -> vm.exportToDrive(request.sections, request.profileIds, request.password)
                     BackupTarget.SHARE -> vm.exportForShare(request.sections, request.profileIds, request.password) { file ->
                         val uri = FileProvider.getUriForFile(context, context.packageName + ".share", file)
                         val send = Intent(Intent.ACTION_SEND)
@@ -227,6 +239,7 @@ fun SettingsBackupPage(
             StageSheetHeader(title = stringResource(R.string.settings_backup_restore_title), subtitle = stringResource(R.string.more_restore_body_mobile))
             StageMenuItem(stringResource(R.string.more_backup_file_tv_mobile), onClick = { restoreChooser = false; pickBackup() }, icon = MobileIcons.Folder, chevron = true)
             StageMenuItem(stringResource(R.string.settings_backup_remote), onClick = { restoreChooser = false; remoteRestore = true }, icon = MobileIcons.Translate, chevron = true)
+            StageMenuItem(stringResource(R.string.kevin_drive), onClick = { restoreChooser = false; withDrive { driveSheet = true } }, icon = MobileIcons.Storage, chevron = true)
         }
     }
 
@@ -279,6 +292,30 @@ fun SettingsBackupPage(
                 onDismiss = vm::cancelRestore,
             )
         }
+    }
+
+    if (driveNotSetUp) {
+        MobileBottomSheet(onDismissRequest = { driveNotSetUp = false }, title = stringResource(R.string.kevin_drive), stage = true) {
+            StageSheetHeader(title = stringResource(R.string.kevin_drive), subtitle = stringResource(R.string.kevin_drive_not_set_up))
+            androidx.compose.foundation.layout.Spacer(Modifier.height(16.dp))
+        }
+    }
+    vm.driveSignIn?.let { signIn ->
+        tv.own.owntv.mobile.drive.DriveSignInSheet(signIn, onRetry = vm::startDriveSignIn, onDismiss = vm::cancelDriveSignIn)
+    }
+    if (driveSheet) {
+        val recordingsOn by vm.recordingsToDrive.collectAsStateWithLifecycle()
+        val recordingLast by vm.driveRecordingLast.collectAsStateWithLifecycle()
+        tv.own.owntv.mobile.drive.DriveSheet(
+            account = vm.driveState.account,
+            recordingsOn = recordingsOn,
+            recordingLast = recordingLast,
+            onToggleRecordings = { vm.setRecordingsToDrive(!recordingsOn) },
+            load = { vm.driveBackups() },
+            onPick = { file -> driveSheet = false; vm.restoreFromDrive(file) },
+            onSignOut = { driveSheet = false; vm.signOutOfDrive() },
+            onDismiss = { driveSheet = false },
+        )
     }
 
     vm.outcome?.let { outcome -> OutcomeSheet(outcome, vm::dismissOutcome) }

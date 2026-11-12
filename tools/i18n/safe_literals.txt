@@ -49,6 +49,115 @@
 1	mime	app/src/main/java/tv/own/owntv/mobile/cast/CastRequest.kt	video/x-matroska
 2	empty	app/src/main/java/tv/own/owntv/mobile/dev/StageGallery.kt	\0
 3	empty	app/src/main/java/tv/own/owntv/mobile/dev/ThemeGalleryScreen.kt	\0
+2	empty	app/src/main/java/tv/own/owntv/mobile/drive/DriveKeys.kt	\0
+3	empty	app/src/main/java/tv/own/owntv/mobile/drive/DriveRecordings.kt	\0
+1	technical	app/src/main/java/tv/own/owntv/mobile/drive/DriveRecordings.kt	$stamp $clean$ext
+1	technical	app/src/main/java/tv/own/owntv/mobile/drive/DriveRecordings.kt	${row.title} - ${row.channelName}
+1	technical	app/src/main/java/tv/own/owntv/mobile/drive/DriveRecordings.kt	.$it
+1	technical	app/src/main/java/tv/own/owntv/mobile/drive/DriveRecordings.kt	.ts
+1	technical	app/src/main/java/tv/own/owntv/mobile/drive/DriveRecordings.kt	KevinDriveRec
+1	sql	app/src/main/java/tv/own/owntv/mobile/drive/DriveRecordings.kt	SELECT id FROM recordings WHERE status = 'COMPLETED' AND filePath IS NOT NULL AND bytes > 0 ORDER BY endedAt ASC
+1	technical	app/src/main/java/tv/own/owntv/mobile/drive/DriveRecordings.kt	[\\\\/:*?"<>|]
+1	technical	app/src/main/java/tv/own/owntv/mobile/drive/DriveRecordings.kt	copy to Drive failed id=${row.id}: ${e.message}
+1	technical	app/src/main/java/tv/own/owntv/mobile/drive/DriveRecordings.kt	enabled
+1	technical	app/src/main/java/tv/own/owntv/mobile/drive/DriveRecordings.kt	kevin_drive_recordings
+1	technical	app/src/main/java/tv/own/owntv/mobile/drive/DriveRecordings.kt	m4v
+1	technical	app/src/main/java/tv/own/owntv/mobile/drive/DriveRecordings.kt	mkv
+1	technical	app/src/main/java/tv/own/owntv/mobile/drive/DriveRecordings.kt	mp4
+1	technical	app/src/main/java/tv/own/owntv/mobile/drive/DriveRecordings.kt	no room on Drive
+1	technical	app/src/main/java/tv/own/owntv/mobile/drive/DriveRecordings.kt	uploaded
+1	technical	app/src/main/java/tv/own/owntv/mobile/drive/DriveRecordings.kt	video/mp2t
+1	technical	app/src/main/java/tv/own/owntv/mobile/drive/DriveRecordings.kt	video/mp4
+1	technical	app/src/main/java/tv/own/owntv/mobile/drive/DriveRecordings.kt	video/x-matroska
+1	technical	app/src/main/java/tv/own/owntv/mobile/drive/DriveRecordings.kt	yyyy-MM-dd HHmm
+4	empty	app/src/main/java/tv/own/owntv/mobile/drive/GoogleDrive.kt	\0
+1	url	app/src/main/java/tv/own/owntv/mobile/drive/GoogleDrive.kt	$API/about?fields=storageQuota
+1	url	app/src/main/java/tv/own/owntv/mobile/drive/GoogleDrive.kt	$API/about?fields=user(emailAddress)
+1	url	app/src/main/java/tv/own/owntv/mobile/drive/GoogleDrive.kt	$API/files/$id
+1	url	app/src/main/java/tv/own/owntv/mobile/drive/GoogleDrive.kt	$API/files/$id?alt=media
+1	url	app/src/main/java/tv/own/owntv/mobile/drive/GoogleDrive.kt	$API/files?fields=id
+1	url	app/src/main/java/tv/own/owntv/mobile/drive/GoogleDrive.kt	$API/files?q=$q&fields=files(id)
+1	url	app/src/main/java/tv/own/owntv/mobile/drive/GoogleDrive.kt	$API/files?q=$q&orderBy=createdTime&pageSize=200&fields=nextPageToken,files(id,name,size,createdTime)
+1	url	app/src/main/java/tv/own/owntv/mobile/drive/GoogleDrive.kt	$UPLOAD/files?uploadType=resumable&fields=id
+1	technical	app/src/main/java/tv/own/owntv/mobile/drive/GoogleDrive.kt	${parent ?: ""}/$name
+1	technical	app/src/main/java/tv/own/owntv/mobile/drive/GoogleDrive.kt	${resp.code}:
+1	technical	app/src/main/java/tv/own/owntv/mobile/drive/GoogleDrive.kt	&pageToken=
+1	technical	app/src/main/java/tv/own/owntv/mobile/drive/GoogleDrive.kt	'$parent' in parents
+1	technical	app/src/main/java/tv/own/owntv/mobile/drive/GoogleDrive.kt	'$parent' in parents and trashed = false
+1	technical	app/src/main/java/tv/own/owntv/mobile/drive/GoogleDrive.kt	Authorization
+1	technical	app/src/main/java/tv/own/owntv/mobile/drive/GoogleDrive.kt	Backups
+1	technical	app/src/main/java/tv/own/owntv/mobile/drive/GoogleDrive.kt	Bearer
+1	technical	app/src/main/java/tv/own/owntv/mobile/drive/GoogleDrive.kt	Content-Range
+1	technical	app/src/main/java/tv/own/owntv/mobile/drive/GoogleDrive.kt	Drive $code $reason
+1	technical	app/src/main/java/tv/own/owntv/mobile/drive/GoogleDrive.kt	KevinDrive
+1	technical	app/src/main/java/tv/own/owntv/mobile/drive/GoogleDrive.kt	Location
+1	technical	app/src/main/java/tv/own/owntv/mobile/drive/GoogleDrive.kt	OwnTV
+1	technical	app/src/main/java/tv/own/owntv/mobile/drive/GoogleDrive.kt	Range
+1	technical	app/src/main/java/tv/own/owntv/mobile/drive/GoogleDrive.kt	Recordings
+3	technical	app/src/main/java/tv/own/owntv/mobile/drive/GoogleDrive.kt	UTF-8
+1	technical	app/src/main/java/tv/own/owntv/mobile/drive/GoogleDrive.kt	X-Upload-Content-Length
+1	technical	app/src/main/java/tv/own/owntv/mobile/drive/GoogleDrive.kt	X-Upload-Content-Type
+1	technical	app/src/main/java/tv/own/owntv/mobile/drive/GoogleDrive.kt	access
+1	technical	app/src/main/java/tv/own/owntv/mobile/drive/GoogleDrive.kt	access_denied
+2	technical	app/src/main/java/tv/own/owntv/mobile/drive/GoogleDrive.kt	access_token
+1	technical	app/src/main/java/tv/own/owntv/mobile/drive/GoogleDrive.kt	account
+1	technical	app/src/main/java/tv/own/owntv/mobile/drive/GoogleDrive.kt	and
+1	technical	app/src/main/java/tv/own/owntv/mobile/drive/GoogleDrive.kt	application/json; charset=UTF-8
+1	technical	app/src/main/java/tv/own/owntv/mobile/drive/GoogleDrive.kt	application/vnd.google-apps.folder
+1	technical	app/src/main/java/tv/own/owntv/mobile/drive/GoogleDrive.kt	authorization_pending
+1	technical	app/src/main/java/tv/own/owntv/mobile/drive/GoogleDrive.kt	bytes $sent-$end/$total
+1	technical	app/src/main/java/tv/own/owntv/mobile/drive/GoogleDrive.kt	bytes */0
+3	technical	app/src/main/java/tv/own/owntv/mobile/drive/GoogleDrive.kt	client_id
+2	technical	app/src/main/java/tv/own/owntv/mobile/drive/GoogleDrive.kt	client_secret
+1	technical	app/src/main/java/tv/own/owntv/mobile/drive/GoogleDrive.kt	createdTime
+1	technical	app/src/main/java/tv/own/owntv/mobile/drive/GoogleDrive.kt	delete failed: ${resp.code}
+2	technical	app/src/main/java/tv/own/owntv/mobile/drive/GoogleDrive.kt	device_code
+1	technical	app/src/main/java/tv/own/owntv/mobile/drive/GoogleDrive.kt	download failed: ${resp.code}
+1	technical	app/src/main/java/tv/own/owntv/mobile/drive/GoogleDrive.kt	emailAddress
+6	technical	app/src/main/java/tv/own/owntv/mobile/drive/GoogleDrive.kt	error
+1	technical	app/src/main/java/tv/own/owntv/mobile/drive/GoogleDrive.kt	error_description
+1	technical	app/src/main/java/tv/own/owntv/mobile/drive/GoogleDrive.kt	errors
+1	technical	app/src/main/java/tv/own/owntv/mobile/drive/GoogleDrive.kt	expired_token
+2	technical	app/src/main/java/tv/own/owntv/mobile/drive/GoogleDrive.kt	expires_in
+1	technical	app/src/main/java/tv/own/owntv/mobile/drive/GoogleDrive.kt	expiry
+2	technical	app/src/main/java/tv/own/owntv/mobile/drive/GoogleDrive.kt	files
+2	technical	app/src/main/java/tv/own/owntv/mobile/drive/GoogleDrive.kt	grant_type
+1	url	app/src/main/java/tv/own/owntv/mobile/drive/GoogleDrive.kt	https://oauth2.googleapis.com/device/code
+1	url	app/src/main/java/tv/own/owntv/mobile/drive/GoogleDrive.kt	https://oauth2.googleapis.com/token
+1	url	app/src/main/java/tv/own/owntv/mobile/drive/GoogleDrive.kt	https://www.googleapis.com/auth/drive.file
+1	url	app/src/main/java/tv/own/owntv/mobile/drive/GoogleDrive.kt	https://www.googleapis.com/drive/v3
+1	url	app/src/main/java/tv/own/owntv/mobile/drive/GoogleDrive.kt	https://www.googleapis.com/upload/drive/v3
+4	technical	app/src/main/java/tv/own/owntv/mobile/drive/GoogleDrive.kt	id
+1	technical	app/src/main/java/tv/own/owntv/mobile/drive/GoogleDrive.kt	interval
+1	technical	app/src/main/java/tv/own/owntv/mobile/drive/GoogleDrive.kt	invalid_grant
+1	technical	app/src/main/java/tv/own/owntv/mobile/drive/GoogleDrive.kt	kevin_google_drive
+1	technical	app/src/main/java/tv/own/owntv/mobile/drive/GoogleDrive.kt	limit
+1	technical	app/src/main/java/tv/own/owntv/mobile/drive/GoogleDrive.kt	mimeType
+1	technical	app/src/main/java/tv/own/owntv/mobile/drive/GoogleDrive.kt	mimeType = '$FOLDER_MIME'
+3	technical	app/src/main/java/tv/own/owntv/mobile/drive/GoogleDrive.kt	name
+1	technical	app/src/main/java/tv/own/owntv/mobile/drive/GoogleDrive.kt	name = '$name'
+1	technical	app/src/main/java/tv/own/owntv/mobile/drive/GoogleDrive.kt	nextPageToken
+1	technical	app/src/main/java/tv/own/owntv/mobile/drive/GoogleDrive.kt	no upload address
+2	technical	app/src/main/java/tv/own/owntv/mobile/drive/GoogleDrive.kt	parents
+1	technical	app/src/main/java/tv/own/owntv/mobile/drive/GoogleDrive.kt	reason
+1	technical	app/src/main/java/tv/own/owntv/mobile/drive/GoogleDrive.kt	refresh
+3	technical	app/src/main/java/tv/own/owntv/mobile/drive/GoogleDrive.kt	refresh_token
+1	technical	app/src/main/java/tv/own/owntv/mobile/drive/GoogleDrive.kt	scope
+1	technical	app/src/main/java/tv/own/owntv/mobile/drive/GoogleDrive.kt	size
+1	technical	app/src/main/java/tv/own/owntv/mobile/drive/GoogleDrive.kt	slow_down
+1	technical	app/src/main/java/tv/own/owntv/mobile/drive/GoogleDrive.kt	storageQuota
+1	technical	app/src/main/java/tv/own/owntv/mobile/drive/GoogleDrive.kt	storageQuotaExceeded
+1	technical	app/src/main/java/tv/own/owntv/mobile/drive/GoogleDrive.kt	token refresh failed: ${resp.code} ${json.optString("error")}
+1	technical	app/src/main/java/tv/own/owntv/mobile/drive/GoogleDrive.kt	trashed = false
+1	technical	app/src/main/java/tv/own/owntv/mobile/drive/GoogleDrive.kt	upload ended without a file id
+1	technical	app/src/main/java/tv/own/owntv/mobile/drive/GoogleDrive.kt	upload failed
+1	technical	app/src/main/java/tv/own/owntv/mobile/drive/GoogleDrive.kt	upload piece failed, retrying (${e?.message})
+1	technical	app/src/main/java/tv/own/owntv/mobile/drive/GoogleDrive.kt	urn:ietf:params:oauth:grant-type:device_code
+1	technical	app/src/main/java/tv/own/owntv/mobile/drive/GoogleDrive.kt	usage
+1	technical	app/src/main/java/tv/own/owntv/mobile/drive/GoogleDrive.kt	user
+1	technical	app/src/main/java/tv/own/owntv/mobile/drive/GoogleDrive.kt	user_code
+1	technical	app/src/main/java/tv/own/owntv/mobile/drive/GoogleDrive.kt	verification_uri
+1	technical	app/src/main/java/tv/own/owntv/mobile/drive/GoogleDrive.kt	verification_url
 1	preference-key	app/src/main/java/tv/own/owntv/mobile/playback/PlaybackService.kt	owntv_playback
 1	technical	app/src/main/java/tv/own/owntv/mobile/playback/PlaybackService.kt	tv.own.owntv.mobile.AUDIO_ONLY
 1	technical	app/src/main/java/tv/own/owntv/mobile/playback/PlaybackService.kt	tv.own.owntv.mobile.SKIP_BACK
@@ -57,6 +166,35 @@
 1	protocol	app/src/main/java/tv/own/owntv/mobile/playback/PlaybackService.kt	tv.own.owntv.mobile.TOGGLE
 1	technical	app/src/main/java/tv/own/owntv/mobile/reminder/ReminderNotifier.kt	owntv_reminders
 1	empty	app/src/main/java/tv/own/owntv/mobile/reminder/ReminderPrompt.kt	\0
+1	technical	app/src/main/java/tv/own/owntv/mobile/stremio/StremioAddons.kt	${a.base}/stream/$type/$id.json
+2	technical	app/src/main/java/tv/own/owntv/mobile/stremio/StremioAddons.kt	/manifest.json
+1	technical	app/src/main/java/tv/own/owntv/mobile/stremio/StremioAddons.kt	HTTP ${resp.code}
+1	technical	app/src/main/java/tv/own/owntv/mobile/stremio/StremioAddons.kt	KevinStremio
+1	technical	app/src/main/java/tv/own/owntv/mobile/stremio/StremioAddons.kt	[]
+1	technical	app/src/main/java/tv/own/owntv/mobile/stremio/StremioAddons.kt	addons
+1	technical	app/src/main/java/tv/own/owntv/mobile/stremio/StremioAddons.kt	behaviorHints
+1	technical	app/src/main/java/tv/own/owntv/mobile/stremio/StremioAddons.kt	description
+2	url	app/src/main/java/tv/own/owntv/mobile/stremio/StremioAddons.kt	http://
+3	url	app/src/main/java/tv/own/owntv/mobile/stremio/StremioAddons.kt	https://
+1	url	app/src/main/java/tv/own/owntv/mobile/stremio/StremioAddons.kt	https://$t
+2	technical	app/src/main/java/tv/own/owntv/mobile/stremio/StremioAddons.kt	id
+2	technical	app/src/main/java/tv/own/owntv/mobile/stremio/StremioAddons.kt	idPrefixes
+1	technical	app/src/main/java/tv/own/owntv/mobile/stremio/StremioAddons.kt	infoHash
+1	technical	app/src/main/java/tv/own/owntv/mobile/stremio/StremioAddons.kt	kevin_stremio
+5	technical	app/src/main/java/tv/own/owntv/mobile/stremio/StremioAddons.kt	name
+1	technical	app/src/main/java/tv/own/owntv/mobile/stremio/StremioAddons.kt	not a manifest
+2	technical	app/src/main/java/tv/own/owntv/mobile/stremio/StremioAddons.kt	prefixes
+1	technical	app/src/main/java/tv/own/owntv/mobile/stremio/StremioAddons.kt	proxyHeaders
+1	technical	app/src/main/java/tv/own/owntv/mobile/stremio/StremioAddons.kt	refused, not a manifest address
+1	technical	app/src/main/java/tv/own/owntv/mobile/stremio/StremioAddons.kt	request
+2	technical	app/src/main/java/tv/own/owntv/mobile/stremio/StremioAddons.kt	resources
+2	technical	app/src/main/java/tv/own/owntv/mobile/stremio/StremioAddons.kt	stream
+1	technical	app/src/main/java/tv/own/owntv/mobile/stremio/StremioAddons.kt	streams
+2	url	app/src/main/java/tv/own/owntv/mobile/stremio/StremioAddons.kt	stremio://
+1	technical	app/src/main/java/tv/own/owntv/mobile/stremio/StremioAddons.kt	title
+4	technical	app/src/main/java/tv/own/owntv/mobile/stremio/StremioAddons.kt	types
+3	technical	app/src/main/java/tv/own/owntv/mobile/stremio/StremioAddons.kt	url
+1	empty	app/src/main/java/tv/own/owntv/mobile/stremio/StremioSheet.kt	\0
 1	empty	app/src/main/java/tv/own/owntv/mobile/ui/LocalizedContent.kt	\0
 1	technical	app/src/main/java/tv/own/owntv/mobile/ui/components/AirDateLabel.kt	yMMMd
 1	empty	app/src/main/java/tv/own/owntv/mobile/ui/components/CategoryPickerSheet.kt	\0
@@ -212,8 +350,12 @@
 1	file-path	app/src/main/java/tv/own/owntv/mobile/ui/screens/library/LibraryViewModel.kt	${StorageAccess.sanitize(movie.name)}.
 1	file-path	app/src/main/java/tv/own/owntv/mobile/ui/screens/library/LibraryViewModel.kt	episode-$episodeNumber
 1	empty	app/src/main/java/tv/own/owntv/mobile/ui/screens/library/MoviePage.kt	\0
+1	technical	app/src/main/java/tv/own/owntv/mobile/ui/screens/library/MoviePage.kt	movie
+1	technical	app/src/main/java/tv/own/owntv/mobile/ui/screens/library/MoviePage.kt	tt
 1	url	app/src/main/java/tv/own/owntv/mobile/ui/screens/library/MoviePage.kt	w1280
 2	empty	app/src/main/java/tv/own/owntv/mobile/ui/screens/library/SeriesPage.kt	\0
+1	technical	app/src/main/java/tv/own/owntv/mobile/ui/screens/library/SeriesPage.kt	$it:${episode.seasonNumber}:${episode.episodeNumber}
+1	technical	app/src/main/java/tv/own/owntv/mobile/ui/screens/library/SeriesPage.kt	addon_streams
 1	technical	app/src/main/java/tv/own/owntv/mobile/ui/screens/library/SeriesPage.kt	bottom
 1	preference-key	app/src/main/java/tv/own/owntv/mobile/ui/screens/library/SeriesPage.kt	delete_subtitles
 1	preference-key	app/src/main/java/tv/own/owntv/mobile/ui/screens/library/SeriesPage.kt	download
@@ -228,7 +370,9 @@
 1	preference-key	app/src/main/java/tv/own/owntv/mobile/ui/screens/library/SeriesPage.kt	play_start
 1	preference-key	app/src/main/java/tv/own/owntv/mobile/ui/screens/library/SeriesPage.kt	refetch_tmdb
 1	technical	app/src/main/java/tv/own/owntv/mobile/ui/screens/library/SeriesPage.kt	row
+1	technical	app/src/main/java/tv/own/owntv/mobile/ui/screens/library/SeriesPage.kt	series
 1	preference-key	app/src/main/java/tv/own/owntv/mobile/ui/screens/library/SeriesPage.kt	tmdb_details
+1	technical	app/src/main/java/tv/own/owntv/mobile/ui/screens/library/SeriesPage.kt	tt
 1	url	app/src/main/java/tv/own/owntv/mobile/ui/screens/library/SeriesPage.kt	w1280
 1	url	app/src/main/java/tv/own/owntv/mobile/ui/screens/library/SeriesPage.kt	w300
 2	empty	app/src/main/java/tv/own/owntv/mobile/ui/screens/library/VodActions.kt	\0
@@ -323,9 +467,12 @@
 1	technical	app/src/main/java/tv/own/owntv/mobile/ui/screens/settings/AddSourcePage.kt	import
 1	technical	app/src/main/java/tv/own/owntv/mobile/ui/screens/settings/AddSourcePage.kt	remote
 1	technical	app/src/main/java/tv/own/owntv/mobile/ui/screens/settings/AddSourcePage.kt	type
+1	technical	app/src/main/java/tv/own/owntv/mobile/ui/screens/settings/BackupViewModel.kt	application/octet-stream
 1	log	app/src/main/java/tv/own/owntv/mobile/ui/screens/settings/BackupViewModel.kt	backup target unavailable
+1	technical	app/src/main/java/tv/own/owntv/mobile/ui/screens/settings/BackupViewModel.kt	backup-drive
 1	file-path	app/src/main/java/tv/own/owntv/mobile/ui/screens/settings/BackupViewModel.kt	backup-export
 1	technical	app/src/main/java/tv/own/owntv/mobile/ui/screens/settings/BackupViewModel.kt	backup-share
+1	technical	app/src/main/java/tv/own/owntv/mobile/ui/screens/settings/BackupViewModel.kt	backup.own
 1	json	app/src/main/java/tv/own/owntv/mobile/ui/screens/settings/DeleteSubtitlesPage.kt	delete-section
 1	json	app/src/main/java/tv/own/owntv/mobile/ui/screens/settings/DeleteSubtitlesPage.kt	header
 1	json	app/src/main/java/tv/own/owntv/mobile/ui/screens/settings/DeleteSubtitlesPage.kt	sections

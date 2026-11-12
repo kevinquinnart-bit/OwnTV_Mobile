@@ -10,6 +10,9 @@
 ## Unreleased
 
 ### New features
+- **☁️ Google Drive: back up, restore and copy recordings (free 15 GB)**
+- **🧩 Stremio add-ons: Add-on streams for films and episodes**
+- **🎬 More like this, and tap an actor for their other titles**
 - **📅 Free UK and Irish guides in Add guide (one tap fills it in)**
 - **🎭 Stage design: the television's new look on phone and tablet**
 - **🎨 Pixel app icon and Plus Jakarta Sans, the new default font**

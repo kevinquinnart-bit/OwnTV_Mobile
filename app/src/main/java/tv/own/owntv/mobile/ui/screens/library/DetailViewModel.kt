@@ -343,6 +343,14 @@ class DetailViewModel(
         return films + shows
     }
 
+    /** Kevin's copy: play a Stremio add-on's stream for the open title; [title] as the player shows it. */
+    fun playAddonStream(stream: tv.own.owntv.mobile.stremio.StremioAddons.Stream, title: String, onStarted: () -> Unit) {
+        val poster = _movie.value?.posterUrl ?: _show.value?.posterUrl
+        viewModelScope.launch {
+            if (tuner.playAddonStream(stream.url, title, tv.own.owntv.core.network.StreamHeaders.encode(stream.headers), poster)) onStarted()
+        }
+    }
+
     fun selectSeason(seasonNumber: Int) {
         _season.value = seasonNumber
     }

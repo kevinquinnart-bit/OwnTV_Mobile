@@ -393,6 +393,24 @@ class VodTuner(
      *   source, and a file on disk seeks, pauses and ends — treating it as live would take away the
      *   scrub bar on the one recording a user most wants to skip through.
      */
+    suspend fun playAddonStream(url: String, title: String, httpHeaders: String?, posterUrl: String?): Boolean {
+        // Kevin's copy: a Stremio add-on's stream, played the way a recording is — nothing is saved
+        // against the provider's own title, since it is not the same file.
+        val pid = currentProfileId() ?: return false
+        if (!dataSaver.allowsStreaming()) return false
+        saveProgress()
+        liveTuner.stop()
+        cast.release(this)
+        player.play(url = url, title = title, isLive = false, httpHeaders = httpHeaders)
+        player.exitAudioOnly()
+        session.attach(engine)
+        PlaybackService.start(context)
+        playingProfileId = pid
+        _playing.value = VodPlayback(MediaType.LIVE, RECORDING_ITEM_ID, title, posterUrl = posterUrl)
+        playingQueue = null
+        return true
+    }
+
     suspend fun playRecording(filePath: String, title: String, posterUrl: String?): Boolean {
         val pid = currentProfileId() ?: return false
         if (settings.externalPlayerFor(MediaType.LIVE).first()) {

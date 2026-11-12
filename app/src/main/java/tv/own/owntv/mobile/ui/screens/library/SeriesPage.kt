@@ -672,7 +672,7 @@ private fun EpisodeOrderSheet(
 }
 
 /** Which follow-up the episode sheet handed off to. Only ever one at a time. */
-private enum class EpisodeDialog { DETAILS, SUBTITLES }
+private enum class EpisodeDialog { DETAILS, SUBTITLES, ADDONS }
 
 /**
  * M6-04, the TV's P6-04: WATCH (Play from start, Play in external player), LIBRARY (Download, Mark as
@@ -713,6 +713,10 @@ private fun EpisodeOptions(
             })
             add(SheetAction("play_external", stringResource(R.string.content_play_external_short), MobileIcons.OpenInNew, group = GROUP_WATCH) {
                 vm.playExternal(episode) {}
+            })
+            // Kevin's copy: Stremio add-on streams for this episode, as on the TV.
+            add(SheetAction("addon_streams", stringResource(R.string.kevin_stremio_streams), MobileIcons.AutoAwesome, group = GROUP_WATCH) {
+                dialog = EpisodeDialog.ADDONS
             })
             add(
                 SheetAction(
@@ -803,6 +807,18 @@ private fun EpisodeOptions(
             details = episodeDetails(episode, meta, mode.tmdbWins),
             onDismiss = { dialog = null },
         )
+        EpisodeDialog.ADDONS -> {
+            val page by vm.titlePage.collectAsStateWithLifecycle()
+            val showName = vm.show.collectAsStateWithLifecycle().value?.name.orEmpty()
+            val playTitle = HeadlineTitle.of(showName) + stringResource(R.string.content_epg_bits_separator) +
+                stringResource(R.string.content_season_episode, episode.seasonNumber, episode.episodeNumber)
+            tv.own.owntv.mobile.stremio.StremioSheet(
+                type = "series",
+                id = page.meta?.imdbId?.takeIf { it.startsWith("tt") }?.let { "$it:${episode.seasonNumber}:${episode.episodeNumber}" },
+                onPlay = { stream -> dialog = null; vm.playAddonStream(stream, playTitle, onPlay) },
+                onDismiss = { dialog = null },
+            )
+        }
         EpisodeDialog.SUBTITLES -> DeleteSubtitlesSheet(
             load = { vm.downloadedSubtitles(episode).map { it.cacheId to (it.languageName ?: it.fileName) } },
             onDelete = { cacheId -> vm.deleteSubtitle(cacheId) },

@@ -22,4 +22,65 @@
     <string name="kevin_more_like_this">More like this</string>
     <string name="kevin_with_person">With <xliff:g id="person">%1$s</xliff:g></string>
     <string name="kevin_with_person_none">Nothing else with <xliff:g id="person">%1$s</xliff:g> found yet. A title is found once its details have been loaded, so this list grows as you browse.</string>
+    <!-- Kevin's copy: Google Drive (More › Backup & Restore) and Stremio add-ons, worded as on the TV. -->
+    <string name="kevin_drive">Google Drive</string>
+    <string name="kevin_drive_backup_place">Google Drive › OwnTV › Backups › <xliff:g id="file">%1$s</xliff:g></string>
+    <string name="kevin_drive_not_set_up">Google Drive isn\'t set up in this copy of the app yet.</string>
+    <string name="kevin_drive_sign_in_title">Sign in to Google Drive</string>
+    <string name="kevin_drive_sign_in_waiting">Waiting for you to finish on the phone…</string>
+    <string name="kevin_drive_sign_in_denied">Sign-in was cancelled on the phone.</string>
+    <string name="kevin_drive_sign_in_expired">The code ran out. Try again for a new one.</string>
+    <string name="kevin_drive_sign_in_failed">Couldn\'t reach Google: <xliff:g id="reason">%1$s</xliff:g></string>
+    <string name="kevin_drive_try_again">Try again</string>
+    <string name="kevin_drive_signed_in_as">Signed in as <xliff:g id="account">%1$s</xliff:g></string>
+    <string name="kevin_drive_signed_in">Signed in</string>
+    <string name="kevin_drive_sign_out">Sign out of Google Drive</string>
+    <string name="kevin_drive_restore_title">Restore from Google Drive</string>
+    <string name="kevin_drive_no_backups">No backups on Google Drive yet.</string>
+    <string name="kevin_drive_error">Google Drive didn\'t answer. Check the connection and try again.</string>
+    <string name="kevin_drive_error_signed_out">Google Drive needs you to sign in again.</string>
+    <string name="kevin_drive_error_full">Google Drive is full.</string>
+    <string name="kevin_drive_recordings">Copy recordings to Google Drive</string>
+    <string name="kevin_drive_recordings_line">Each finished recording is copied. When Drive is full, the oldest recordings there are deleted to make room. This box keeps its own copy.</string>
+    <string name="kevin_drive_rec_copying">Copying “<xliff:g id="title">%1$s</xliff:g>” · <xliff:g id="percent">%2$d</xliff:g>%%</string>
+    <string name="kevin_drive_rec_copied">Last copied: “<xliff:g id="title">%1$s</xliff:g>”</string>
+    <plurals name="kevin_drive_rec_copied_removed">
+        <item quantity="one">Last copied: “<xliff:g id="title">%1$s</xliff:g>”, after deleting <xliff:g id="count">%2$d</xliff:g> older recording on Drive to make room</item>
+        <item quantity="other">Last copied: “<xliff:g id="title">%1$s</xliff:g>”, after deleting <xliff:g id="count">%2$d</xliff:g> older recordings on Drive to make room</item>
+    </plurals>
+    <string name="kevin_drive_rec_failed">Couldn\'t copy “<xliff:g id="title">%1$s</xliff:g>”. It will be tried again after the next recording.</string>
+    <string name="kevin_drive_rec_full">Couldn\'t copy “<xliff:g id="title">%1$s</xliff:g>”: not enough room on Google Drive.</string>
+    <string name="kevin_stremio_streams">Add-on streams</string>
+    <string name="kevin_stremio_none_added">No add-ons yet. Add one to look for streams for this title.</string>
+    <string name="kevin_stremio_needs_imdb">Add-ons find a title by its IMDb number, which comes with the title\'s details. Open its details once (Menu › Details), then try again.</string>
+    <string name="kevin_stremio_no_streams">No playable streams found.</string>
+    <plurals name="kevin_stremio_torrents">
+        <item quantity="one"><xliff:g id="count">%1$d</xliff:g> more was a torrent link, which can\'t play here.</item>
+        <item quantity="other"><xliff:g id="count">%1$d</xliff:g> more were torrent links, which can\'t play here.</item>
+    </plurals>
+    <plurals name="kevin_stremio_failed">
+        <item quantity="one"><xliff:g id="count">%1$d</xliff:g> add-on didn\'t answer.</item>
+        <item quantity="other"><xliff:g id="count">%1$d</xliff:g> add-ons didn\'t answer.</item>
+    </plurals>
+    <string name="kevin_stremio_add">Add an add-on…</string>
+    <string name="kevin_stremio_remove">Remove an add-on…</string>
+    <string name="kevin_stremio_add_title">Add a Stremio add-on</string>
+    <string name="kevin_stremio_add_steps">On your phone, open <xliff:g id="url">%1$s</xliff:g> (or scan the code), paste the add-on\'s address and enter code <xliff:g id="code">%2$s</xliff:g>.</string>
+    <string name="kevin_stremio_type_here">Type it here instead</string>
+    <string name="kevin_stremio_address_label">Add-on address (ends in manifest.json)</string>
+    <string name="kevin_stremio_added">Added <xliff:g id="name">%1$s</xliff:g></string>
+    <string name="kevin_stremio_not_manifest">That isn\'t an add-on address. It should end in manifest.json.</string>
+    <string name="kevin_stremio_no_stream_resource">That add-on doesn\'t offer streams.</string>
+    <string name="kevin_stremio_unreachable">Couldn\'t reach that add-on.</string>
+    <string name="kevin_stremio_server_failed">Couldn\'t open the phone page on this TV.</string>
+    <string name="kevin_stremio_remove_title">Remove an add-on</string>
+    <string name="kevin_stremio_page_code">Code on the TV</string>
+    <string name="kevin_stremio_page_send">Send to TV</string>
+    <string name="kevin_stremio_page_sent">Sent to the TV. You can add another or close this page.</string>
+    <string name="kevin_stremio_page_wrong">That code doesn\'t match the one on the TV.</string>
+    <string name="kevin_drive_sign_in_steps_phone">Tap the button: Google\'s page opens with this code already copied. Paste it, then choose your account.</string>
+    <string name="kevin_drive_open_google">Open Google and paste the code</string>
+    <string name="kevin_stremio_add_steps_phone">Paste the add-on\'s address. It ends in manifest.json.</string>
+    <string name="kevin_stremio_needs_imdb_phone">Add-ons find a title by its IMDb number, which comes with the title\'s details from TMDB. Wait for the details to load on this page, then try again.</string>
+    <string name="kevin_stremio_paste">Paste</string>
 </resources>
