@@ -847,10 +847,16 @@ class LiveTuner(
         if (!recoverPlayed && recoverTries >= 3) return
         if (_replaying.value || timeshift.isRewound) return
         if (recoverJob?.isActive == true) return
-        val wait = when (recoverTries) { 0 -> 2_000L; 1 -> 5_000L; else -> 10_000L }
-        recoverTries++
+        val wait = when (recoverTries) { 0 -> 3_000L; 1 -> 5_000L; else -> 10_000L }
         recoverJob = scope.launch {
             kotlinx.coroutines.delay(wait)
+            // Only a real give-up: an engine that fails while the player hands the channel to its other
+            // engine is the normal fallback, and reopening then made the picture jump and stall.
+            val onExo = live.liveOnExo.value
+            val failure = if (onExo) exo.error.value else player.error.value
+            val busy = exo.isPlaying.value || player.isPlaying.value || exo.buffering.value || player.buffering.value
+            if (failure == null || busy) return@launch
+            recoverTries++
             if (recoverVersion == null) return@launch
             if (variantVersions.size >= 2) {
                 stepDownVariant(R.string.kevin_variant_reason_lost)
