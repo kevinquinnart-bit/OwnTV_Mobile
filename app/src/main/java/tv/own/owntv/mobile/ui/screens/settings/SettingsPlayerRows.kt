@@ -324,7 +324,7 @@ internal fun liveSections(vm: SettingsViewModel): List<SettingSection> {
     val sources by vm.sources.collectAsStateWithLifecycle()
     val timeshift = s.timeshiftEnabled.pref(false)
     val window = s.timeshiftWindowMinutes.pref(TimeshiftRules.DEFAULT_WINDOW_MINUTES)
-    val resume = s.timeshiftResumeMode.pref(SettingsRepository.ResumeMode.ASK)
+    val resume = s.timeshiftResumeMode.pref(SettingsRepository.ResumeMode.NEVER)
     val latency = LiveLatency.fromName(s.liveLatencyMode.pref(LiveLatency.BALANCED.name))
     val custom = s.liveLatencyCustomSecs.pref(LiveBuffer.CUSTOM_DEFAULT)
     val preroll = s.livePrerollSecs.pref(0)
