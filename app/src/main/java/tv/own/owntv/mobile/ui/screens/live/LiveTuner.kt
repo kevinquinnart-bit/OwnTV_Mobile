@@ -799,19 +799,80 @@ class LiveTuner(
     private var variantLongStall: kotlinx.coroutines.Job? = null
     private var variantStartTimer: kotlinx.coroutines.Job? = null
 
+    // Kevin's copy (v2): a channel that loses its connection (the provider ends the stream) is opened
+    // again by itself instead of stopping on "Playback error". With other versions it moves to the next
+    // one; with one version it reopens the same one. It waits 2, then 5, then every 10 seconds, until it
+    // plays again or the channel is changed. One that never played gets three tries. A rewound channel
+    // or a catch-up programme is left alone. Same rules as the TV app.
+    private var recoverVersion: ChannelEntity? = null
+    private var recoverPlayed = false
+    private var recoverTries = 0
+    private var recoverPlayingSince = 0L
+    private var recoverJob: kotlinx.coroutines.Job? = null
+
     private fun armVariantWatch(versions: List<ChannelEntity>, shownName: String) {
         variantVersions = if (versions.size > 1) versions else emptyList()
         variantAt = 0
         variantShownName = shownName
+        recoverVersion = versions.firstOrNull()
+        recoverPlayed = false
+        recoverTries = 0
+        recoverPlayingSince = 0L
+        recoverJob?.cancel()
+        recoverJob = null
         resetVariantStalls()
         armVariantStart()
+        // A channel opened from a preview that is already playing never reports a fresh start.
+        scope.launch {
+            repeat(3) {
+                if (exo.isPlaying.value || player.isPlaying.value) { if (recoverVersion != null) recoverPlayed = true; return@launch }
+                kotlinx.coroutines.delay(1_000L)
+            }
+        }
     }
 
     private fun disarmVariantWatch() {
         variantVersions = emptyList()
+        recoverVersion = null
+        recoverJob?.cancel()
+        recoverJob = null
         resetVariantStalls()
         variantStartTimer?.cancel()
         variantStartTimer = null
+    }
+
+    /** The engine on screen gave up on the channel: open it again (see [recoverVersion]). */
+    private fun onLiveGaveUp() {
+        val single = recoverVersion ?: return
+        if (!recoverPlayed && recoverTries >= 3) return
+        if (_replaying.value || timeshift.isRewound) return
+        if (recoverJob?.isActive == true) return
+        val wait = when (recoverTries) { 0 -> 2_000L; 1 -> 5_000L; else -> 10_000L }
+        recoverTries++
+        recoverJob = scope.launch {
+            kotlinx.coroutines.delay(wait)
+            if (recoverVersion == null) return@launch
+            if (variantVersions.size >= 2) {
+                stepDownVariant(R.string.kevin_variant_reason_lost)
+            } else {
+                runCatching {
+                    tv.own.owntv.player.PlaybackErrorLog.event(
+                        context,
+                        engine = if (exo.isPlaying.value || exo.buffering.value) ENGINE_EXO else ENGINE_MPV,
+                        live = true,
+                        reason = tv.own.owntv.player.PlayerFailureReason.LIVE_FALLBACK,
+                        detail = context.getString(R.string.kevin_variant_reopened, single.name),
+                    )
+                }
+                resetVariantStalls()
+                // Stopped first: the same address again would only be unmuted, leaving the error on screen.
+                live.stop()
+                live.launch {
+                    val source = withContext(Dispatchers.IO) { sourceDao.getById(single.sourceId) }
+                    live.start(single.copy(name = variantShownName), source)
+                }
+            }
+        }
     }
 
     /** A version that has not played [VARIANT_START_MS] after it was opened gives way to the next. */
@@ -837,8 +898,16 @@ class LiveTuner(
     }
 
     private fun onVariantPlayback(buffering: Boolean, playing: Boolean) {
-        if (variantVersions.isEmpty()) return
         val now = android.os.SystemClock.elapsedRealtime()
+        // A minute of good picture before a drop starts the reconnect waits again from the shortest.
+        if (playing && !buffering) {
+            if (recoverVersion != null) recoverPlayed = true
+            if (recoverPlayingSince == 0L) recoverPlayingSince = now
+        } else {
+            if (recoverPlayingSince > 0L && now - recoverPlayingSince >= 60_000L) recoverTries = 0
+            recoverPlayingSince = 0L
+        }
+        if (variantVersions.isEmpty()) return
         if (playing && !buffering) {
             // Only a stall after the picture has played counts; the first load is not a stall.
             if (variantHasPlayed && variantBufferingSince > 0L && now - variantBufferingSince >= VARIANT_STALL_MS) {
@@ -897,6 +966,13 @@ class LiveTuner(
             }
                 .distinctUntilChanged()
                 .collect { (buffering, playing) -> onVariantPlayback(buffering, playing) }
+        }
+        // Each engine watched on its own: an old failure left on one must not hide a new one on the other.
+        scope.launch {
+            exo.error.map { it != null }.distinctUntilChanged().collect { failed -> if (failed) onLiveGaveUp() }
+        }
+        scope.launch {
+            player.error.map { it != null }.distinctUntilChanged().collect { failed -> if (failed) onLiveGaveUp() }
         }
     }
 
