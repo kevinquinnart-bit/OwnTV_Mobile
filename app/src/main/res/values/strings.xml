@@ -24,6 +24,19 @@
     <string name="kevin_more_like_this">More like this</string>
     <string name="kevin_with_person">With <xliff:g id="person">%1$s</xliff:g></string>
     <string name="kevin_with_person_none">Nothing else with <xliff:g id="person">%1$s</xliff:g> found yet. A title is found once its details have been loaded, so this list grows as you browse.</string>
+    <!-- Kevin's copy: the free UK and Irish players, worded as on the TV. -->
+    <string name="kevin_players_title">UK &amp; Irish players</string>
+    <string name="kevin_players_note">These play in their own apps. Back returns here.</string>
+    <string name="kevin_players_installed">Installed</string>
+    <string name="kevin_players_missing">Not installed</string>
+    <string name="kevin_players_no_store">Couldn\'t open the app or the app store.</string>
+    <string name="kevin_open_in_player">Open in <xliff:g id="player">%1$s</xliff:g></string>
+    <string name="kevin_player_bbc" translatable="false">BBC iPlayer</string>
+    <string name="kevin_player_itv" translatable="false">ITVX</string>
+    <string name="kevin_player_c4" translatable="false">Channel 4</string>
+    <string name="kevin_player_c5" translatable="false">5 (Channel 5)</string>
+    <string name="kevin_player_rte" translatable="false">RTÉ Player</string>
+    <string name="kevin_player_virgin" translatable="false">Virgin Media Play</string>
     <!-- Kevin's copy: Google Drive (More › Backup & Restore) and Stremio add-ons, worded as on the TV. -->
     <string name="kevin_drive">Google Drive</string>
     <string name="kevin_drive_backup_place">Google Drive › KueTV › Backups › <xliff:g id="file">%1$s</xliff:g></string>

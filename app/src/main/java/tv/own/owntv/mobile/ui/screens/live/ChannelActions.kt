@@ -117,7 +117,18 @@ fun ChannelMenu(
             ?.let { pluralStringResource(R.plurals.settings_epg_guide_days_value, it, it) }
         val matchValue = stringResource(if (vm.currentEpgMatch(channel) != null) R.string.settings_manual else R.string.settings_auto)
         val offsetValue = vm.currentEpgShift(channel)?.let { epgShiftLabel(it) } ?: stringResource(R.string.content_epg_offset_global_short)
+        // Kevin's copy: a channel one of the free UK or Irish players carries offers that player's own
+        // app, as a backup to the provider's stream. Looked up before the sheet is built (the host keeps
+        // the first version it is given), and shown only when the app is on this phone.
+        val playerIndex = remember(channel.name) { tv.own.owntv.mobile.ui.screens.PlayerForChannel.indexFor(ProviderTags.parse(channel.name).name) }
+        val playerApp = remember(playerIndex) {
+            playerIndex?.let { runCatching { tv.own.owntv.mobile.ui.screens.FreePlayers.find(context.applicationContext).getOrNull(it) }.getOrNull() }
+        }
+        val playerLabel = playerIndex?.let { stringResource(R.string.kevin_open_in_player, stringResource(tv.own.owntv.mobile.ui.screens.FreePlayers.all[it].nameRes)) }
         val actions = buildList {
+            if (playerApp != null && playerLabel != null) {
+                add(SheetAction("open_in_player", playerLabel, MobileIcons.OpenInNew, group = watch) { tv.own.owntv.mobile.ui.screens.FreePlayers.open(context, playerApp.packageName) })
+            }
             if (channel.catchup) {
                 add(SheetAction("catchup", stringResource(R.string.content_catchup), MobileIcons.Catchup, group = watch, value = catchupValue, onClick = onOpenCatchup))
             }

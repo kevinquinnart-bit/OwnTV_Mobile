@@ -25,6 +25,7 @@ fun MoreLeafPage(
     when (leaf) {
         MoreLeaf.FAVORITES -> FavoritesScreen(onOpenChannel, onOpenItem)
         MoreLeaf.HISTORY -> WatchHistoryScreen(onOpenChannel, onOpenItem, onOpenPlayer)
+        MoreLeaf.PLAYERS -> PlayersPage()
         MoreLeaf.BACKUP -> SettingsBackupPage()
         MoreLeaf.LOCAL_SYNC -> SettingsLocalSyncPage()
         MoreLeaf.ERROR_LOG -> SettingsErrorLogPage()

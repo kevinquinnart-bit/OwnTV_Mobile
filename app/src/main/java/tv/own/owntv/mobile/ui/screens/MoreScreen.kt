@@ -133,6 +133,8 @@ fun MoreScreen(
                 StageGroupLabel(stringResource(R.string.more_group_your_things))
                 MoreItem(R.string.content_category_favorites, MobileIcons.FavoriteBorder, favorites.total.toString()) { onOpenLeaf(MoreLeaf.FAVORITES) }
                 MoreItem(R.string.content_category_history, MobileIcons.History, history.total.toString()) { onOpenLeaf(MoreLeaf.HISTORY) }
+                // Kevin's copy: the free UK and Irish players, each opening its own app.
+                MoreItem(R.string.kevin_players_title, MobileIcons.PlayCircle, null) { onOpenLeaf(MoreLeaf.PLAYERS) }
                 StageGroupLabel(stringResource(R.string.more_group_keep_safe))
                 // Never backed up is the one row that warns (`.tag.warn`); a backup says how long ago.
                 val backupValue = lastBackup?.let { relativeShort(it.at) }

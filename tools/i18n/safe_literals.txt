@@ -287,9 +287,58 @@
 1	uri	app/src/main/java/tv/own/owntv/mobile/ui/screens/MoreLeaf.kt	history
 1	uri	app/src/main/java/tv/own/owntv/mobile/ui/screens/MoreLeaf.kt	localsync
 1	uri	app/src/main/java/tv/own/owntv/mobile/ui/screens/MoreLeaf.kt	more/$slug
+1	protocol	app/src/main/java/tv/own/owntv/mobile/ui/screens/MoreLeaf.kt	players
 1	technical	app/src/main/java/tv/own/owntv/mobile/ui/screens/MoreScreen.kt	Rebuild Now Trending
 1	technical	app/src/main/java/tv/own/owntv/mobile/ui/screens/MoreScreen.kt	Theme gallery
 1	protocol	app/src/main/java/tv/own/owntv/mobile/ui/screens/MoreScreen.kt	dev_gallery
+4	protocol	app/src/main/java/tv/own/owntv/mobile/ui/screens/PlayerForChannel.kt	\0
+2	protocol	app/src/main/java/tv/own/owntv/mobile/ui/screens/PlayerForChannel.kt	$it
+1	protocol	app/src/main/java/tv/own/owntv/mobile/ui/screens/PlayerForChannel.kt	4seven
+1	protocol	app/src/main/java/tv/own/owntv/mobile/ui/screens/PlayerForChannel.kt	5 action
+1	protocol	app/src/main/java/tv/own/owntv/mobile/ui/screens/PlayerForChannel.kt	5 select
+1	protocol	app/src/main/java/tv/own/owntv/mobile/ui/screens/PlayerForChannel.kt	5 star
+1	protocol	app/src/main/java/tv/own/owntv/mobile/ui/screens/PlayerForChannel.kt	5 usa
+1	protocol	app/src/main/java/tv/own/owntv/mobile/ui/screens/PlayerForChannel.kt	5action
+1	protocol	app/src/main/java/tv/own/owntv/mobile/ui/screens/PlayerForChannel.kt	5select
+1	protocol	app/src/main/java/tv/own/owntv/mobile/ui/screens/PlayerForChannel.kt	5star
+1	protocol	app/src/main/java/tv/own/owntv/mobile/ui/screens/PlayerForChannel.kt	5usa
+1	protocol	app/src/main/java/tv/own/owntv/mobile/ui/screens/PlayerForChannel.kt	bbc
+1	protocol	app/src/main/java/tv/own/owntv/mobile/ui/screens/PlayerForChannel.kt	cbbc
+1	protocol	app/src/main/java/tv/own/owntv/mobile/ui/screens/PlayerForChannel.kt	cbeebies
+1	protocol	app/src/main/java/tv/own/owntv/mobile/ui/screens/PlayerForChannel.kt	channel 4
+1	protocol	app/src/main/java/tv/own/owntv/mobile/ui/screens/PlayerForChannel.kt	channel 5
+1	protocol	app/src/main/java/tv/own/owntv/mobile/ui/screens/PlayerForChannel.kt	channel4
+1	protocol	app/src/main/java/tv/own/owntv/mobile/ui/screens/PlayerForChannel.kt	channel5
+1	protocol	app/src/main/java/tv/own/owntv/mobile/ui/screens/PlayerForChannel.kt	e4
+1	protocol	app/src/main/java/tv/own/owntv/mobile/ui/screens/PlayerForChannel.kt	film 4
+1	protocol	app/src/main/java/tv/own/owntv/mobile/ui/screens/PlayerForChannel.kt	film4
+1	protocol	app/src/main/java/tv/own/owntv/mobile/ui/screens/PlayerForChannel.kt	itv
+1	protocol	app/src/main/java/tv/own/owntv/mobile/ui/screens/PlayerForChannel.kt	more 4
+1	protocol	app/src/main/java/tv/own/owntv/mobile/ui/screens/PlayerForChannel.kt	more4
+1	protocol	app/src/main/java/tv/own/owntv/mobile/ui/screens/PlayerForChannel.kt	rte
+1	protocol	app/src/main/java/tv/own/owntv/mobile/ui/screens/PlayerForChannel.kt	stv
+1	protocol	app/src/main/java/tv/own/owntv/mobile/ui/screens/PlayerForChannel.kt	utv
+1	protocol	app/src/main/java/tv/own/owntv/mobile/ui/screens/PlayerForChannel.kt	virgin
+1	protocol	app/src/main/java/tv/own/owntv/mobile/ui/screens/PlayersPage.kt	\0
+1	protocol	app/src/main/java/tv/own/owntv/mobile/ui/screens/PlayersPage.kt	5
+1	protocol	app/src/main/java/tv/own/owntv/mobile/ui/screens/PlayersPage.kt	air.itv
+1	protocol	app/src/main/java/tv/own/owntv/mobile/ui/screens/PlayersPage.kt	all 4
+1	protocol	app/src/main/java/tv/own/owntv/mobile/ui/screens/PlayersPage.kt	channel 4
+1	protocol	app/src/main/java/tv/own/owntv/mobile/ui/screens/PlayersPage.kt	channel4
+1	protocol	app/src/main/java/tv/own/owntv/mobile/ui/screens/PlayersPage.kt	channel5
+1	protocol	app/src/main/java/tv/own/owntv/mobile/ui/screens/PlayersPage.kt	com.itv.
+1	protocol	app/src/main/java/tv/own/owntv/mobile/ui/screens/PlayersPage.kt	demand5
+1	protocol	app/src/main/java/tv/own/owntv/mobile/ui/screens/PlayersPage.kt	https://play.google.com/store/search?c=apps&q=
+1	protocol	app/src/main/java/tv/own/owntv/mobile/ui/screens/PlayersPage.kt	ie.rte
+2	protocol	app/src/main/java/tv/own/owntv/mobile/ui/screens/PlayersPage.kt	iplayer
+1	protocol	app/src/main/java/tv/own/owntv/mobile/ui/screens/PlayersPage.kt	itv hub
+1	protocol	app/src/main/java/tv/own/owntv/mobile/ui/screens/PlayersPage.kt	itvx
+1	url	app/src/main/java/tv/own/owntv/mobile/ui/screens/PlayersPage.kt	market://search?q=
+2	protocol	app/src/main/java/tv/own/owntv/mobile/ui/screens/PlayersPage.kt	my5
+1	protocol	app/src/main/java/tv/own/owntv/mobile/ui/screens/PlayersPage.kt	rte player
+1	protocol	app/src/main/java/tv/own/owntv/mobile/ui/screens/PlayersPage.kt	rté player
+1	protocol	app/src/main/java/tv/own/owntv/mobile/ui/screens/PlayersPage.kt	virgin media
+1	protocol	app/src/main/java/tv/own/owntv/mobile/ui/screens/PlayersPage.kt	virginmedia
 1	empty	app/src/main/java/tv/own/owntv/mobile/ui/screens/downloads/DownloadsScreen.kt	\0
 1	technical	app/src/main/java/tv/own/owntv/mobile/ui/screens/downloads/DownloadsScreen.kt	
 1	technical	app/src/main/java/tv/own/owntv/mobile/ui/screens/downloads/DownloadsScreen.kt	
@@ -405,6 +454,7 @@
 1	preference-key	app/src/main/java/tv/own/owntv/mobile/ui/screens/live/ChannelActions.kt	match_epg
 1	preference-key	app/src/main/java/tv/own/owntv/mobile/ui/screens/live/ChannelActions.kt	move
 1	preference-key	app/src/main/java/tv/own/owntv/mobile/ui/screens/live/ChannelActions.kt	move_to_category
+1	protocol	app/src/main/java/tv/own/owntv/mobile/ui/screens/live/ChannelActions.kt	open_in_player
 1	preference-key	app/src/main/java/tv/own/owntv/mobile/ui/screens/live/ChannelActions.kt	play_external
 1	technical	app/src/main/java/tv/own/owntv/mobile/ui/screens/live/ChannelActions.kt	record
 1	preference-key	app/src/main/java/tv/own/owntv/mobile/ui/screens/live/ChannelActions.kt	remove_from_category
