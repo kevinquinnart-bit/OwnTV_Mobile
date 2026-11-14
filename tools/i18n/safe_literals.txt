@@ -87,7 +87,6 @@
 1	technical	app/src/main/java/tv/own/owntv/mobile/drive/GoogleDrive.kt	Backups
 1	technical	app/src/main/java/tv/own/owntv/mobile/drive/GoogleDrive.kt	Bearer
 1	technical	app/src/main/java/tv/own/owntv/mobile/drive/GoogleDrive.kt	Content-Range
-1	technical	app/src/main/java/tv/own/owntv/mobile/drive/GoogleDrive.kt	Drive $code $reason
 1	technical	app/src/main/java/tv/own/owntv/mobile/drive/GoogleDrive.kt	Drive $code $reason $said
 1	technical	app/src/main/java/tv/own/owntv/mobile/drive/GoogleDrive.kt	KevinDrive
 1	technical	app/src/main/java/tv/own/owntv/mobile/drive/GoogleDrive.kt	KueTV
