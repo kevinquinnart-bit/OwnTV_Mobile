@@ -312,6 +312,8 @@ open class MainActivity : FragmentActivity() {
             autoRefresh.check(includeStartup = false)
             // Kevin's copy: opening the app refreshes playlists and guides, as on the television.
             if (settings.activeProfileId.first() >= 0) refreshOnOpen()
+            // Kevin's copy: opening the app backs it up to Google Drive, as often as the Drive sheet says.
+            org.koin.core.context.GlobalContext.get().get<tv.own.owntv.mobile.drive.DriveAutoBackup>().onAppOpened()
         }
         if (droppedVideoForBackground) {
             droppedVideoForBackground = false

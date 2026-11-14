@@ -43,6 +43,7 @@ class BackupViewModel(
     private val companion: CompanionController,
     private val drive: tv.own.owntv.mobile.drive.GoogleDrive,
     private val driveRecordings: tv.own.owntv.mobile.drive.DriveRecordings,
+    private val driveAutoBackup: tv.own.owntv.mobile.drive.DriveAutoBackup,
 ) : ViewModel() {
 
     // ---- Kevin's copy: Google Drive, as on the TV ----
@@ -103,6 +104,14 @@ class BackupViewModel(
     val recordingsToDrive: StateFlow<Boolean> get() = driveRecordings.enabled
     val driveRecordingLast: StateFlow<tv.own.owntv.mobile.drive.DriveRecordings.Last> get() = driveRecordings.last
     fun setRecordingsToDrive(on: Boolean) = driveRecordings.setEnabled(on)
+
+    val driveAutoBackupHow: StateFlow<tv.own.owntv.mobile.drive.DriveAutoBackup.How> get() = driveAutoBackup.how
+
+    /** Each tap moves to the next choice: every open, daily, weekly, off. */
+    fun nextDriveAutoBackupHow() {
+        val all = tv.own.owntv.mobile.drive.DriveAutoBackup.How.entries
+        driveAutoBackup.setHow(all[(driveAutoBackup.how.value.ordinal + 1) % all.size])
+    }
 
     /** The message for a Drive failure. An unrecognised one also carries Google's own reason. */
     private fun driveFailure(e: Throwable): Outcome.Failed {

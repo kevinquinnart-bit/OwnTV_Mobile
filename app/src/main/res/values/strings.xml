@@ -55,6 +55,11 @@
     <string name="kevin_drive_error">Google Drive didn\'t answer. Check the connection and try again.</string>
     <string name="kevin_drive_error_signed_out">Google Drive needs you to sign in again.</string>
     <string name="kevin_drive_error_full">Google Drive is full.</string>
+    <string name="kevin_drive_auto">Back up to Google Drive automatically</string>
+    <string name="kevin_drive_auto_open">Every time the app opens. Tap to change.</string>
+    <string name="kevin_drive_auto_daily">Once a day. Tap to change.</string>
+    <string name="kevin_drive_auto_weekly">Once a week. Tap to change.</string>
+    <string name="kevin_drive_auto_off">Off. Tap to change.</string>
     <string name="kevin_drive_recordings">Copy recordings to Google Drive</string>
     <string name="kevin_drive_recordings_line">Each finished recording is copied. When Drive is full, the oldest recordings there are deleted to make room. This box keeps its own copy.</string>
     <string name="kevin_drive_rec_copying">Copying “<xliff:g id="title">%1$s</xliff:g>” · <xliff:g id="percent">%2$d</xliff:g>%%</string>

@@ -306,11 +306,14 @@ fun SettingsBackupPage(
     if (driveSheet) {
         val recordingsOn by vm.recordingsToDrive.collectAsStateWithLifecycle()
         val recordingLast by vm.driveRecordingLast.collectAsStateWithLifecycle()
+        val autoHow by vm.driveAutoBackupHow.collectAsStateWithLifecycle()
         tv.own.owntv.mobile.drive.DriveSheet(
             account = vm.driveState.account,
             recordingsOn = recordingsOn,
             recordingLast = recordingLast,
             onToggleRecordings = { vm.setRecordingsToDrive(!recordingsOn) },
+            autoBackup = autoHow,
+            onNextAutoBackup = vm::nextDriveAutoBackupHow,
             load = { vm.driveBackups() },
             onPick = { file -> driveSheet = false; vm.restoreFromDrive(file) },
             onSignOut = { driveSheet = false; vm.signOutOfDrive() },

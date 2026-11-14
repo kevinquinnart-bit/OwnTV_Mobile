@@ -49,6 +49,14 @@
 1	mime	app/src/main/java/tv/own/owntv/mobile/cast/CastRequest.kt	video/x-matroska
 2	empty	app/src/main/java/tv/own/owntv/mobile/dev/StageGallery.kt	\0
 3	empty	app/src/main/java/tv/own/owntv/mobile/dev/ThemeGalleryScreen.kt	\0
+1	technical	app/src/main/java/tv/own/owntv/mobile/drive/DriveAutoBackup.kt	KevinDrive
+1	technical	app/src/main/java/tv/own/owntv/mobile/drive/DriveAutoBackup.kt	application/octet-stream
+1	technical	app/src/main/java/tv/own/owntv/mobile/drive/DriveAutoBackup.kt	automatic backup failed: ${e.message}
+1	technical	app/src/main/java/tv/own/owntv/mobile/drive/DriveAutoBackup.kt	backup-drive-auto
+1	technical	app/src/main/java/tv/own/owntv/mobile/drive/DriveAutoBackup.kt	how
+1	technical	app/src/main/java/tv/own/owntv/mobile/drive/DriveAutoBackup.kt	kevin_drive_auto_backup
+1	technical	app/src/main/java/tv/own/owntv/mobile/drive/DriveAutoBackup.kt	kuetv-auto-backup.own
+1	technical	app/src/main/java/tv/own/owntv/mobile/drive/DriveAutoBackup.kt	last_ms
 3	empty	app/src/main/java/tv/own/owntv/mobile/drive/DriveRecordings.kt	\0
 1	technical	app/src/main/java/tv/own/owntv/mobile/drive/DriveRecordings.kt	$stamp $clean$ext
 1	technical	app/src/main/java/tv/own/owntv/mobile/drive/DriveRecordings.kt	${row.title} - ${row.channelName}

@@ -29,10 +29,11 @@ val shellModule = module {
     viewModel {
         tv.own.owntv.mobile.ui.screens.MoreCountsViewModel(get(), get(), get(), get(), get(), get(), get(), get(), get(), get(), get(), get(), get(), get(), get())
     }
-    viewModel { BackupViewModel(get(), get(), androidContext(), get(), get(), get(), get(), get()) }
+    viewModel { BackupViewModel(get(), get(), androidContext(), get(), get(), get(), get(), get(), get()) }
     // Kevin's copy: Google Drive (backups, recordings) and Stremio add-ons, as on the TV.
     single { tv.own.owntv.mobile.drive.GoogleDrive(androidContext(), get()) }
     single { tv.own.owntv.mobile.drive.DriveRecordings(androidContext(), get(), get(), get(), get()) }
+    single { tv.own.owntv.mobile.drive.DriveAutoBackup(androidContext(), get(), get(), get()) }
     single { tv.own.owntv.mobile.stremio.StremioAddons(androidContext(), get()) }
     viewModel { tv.own.owntv.mobile.ui.screens.settings.LocalSyncViewModel(get()) }
     // An import has to outlive the wizard screen that started it — "Run in background" is exactly

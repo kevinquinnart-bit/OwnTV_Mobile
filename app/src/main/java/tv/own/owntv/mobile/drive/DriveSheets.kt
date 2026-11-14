@@ -102,6 +102,8 @@ internal fun DriveSheet(
     recordingsOn: Boolean,
     recordingLast: DriveRecordings.Last,
     onToggleRecordings: () -> Unit,
+    autoBackup: DriveAutoBackup.How,
+    onNextAutoBackup: () -> Unit,
     load: suspend () -> List<GoogleDrive.DriveFile>?,
     onPick: (GoogleDrive.DriveFile) -> Unit,
     onSignOut: () -> Unit,
@@ -142,6 +144,19 @@ internal fun DriveSheet(
                 )
             }
         }
+        tv.own.owntv.mobile.ui.stage.StageSettingRow(
+            title = stringResource(R.string.kevin_drive_auto),
+            subtitle = stringResource(
+                when (autoBackup) {
+                    DriveAutoBackup.How.OPEN -> R.string.kevin_drive_auto_open
+                    DriveAutoBackup.How.DAILY -> R.string.kevin_drive_auto_daily
+                    DriveAutoBackup.How.WEEKLY -> R.string.kevin_drive_auto_weekly
+                    DriveAutoBackup.How.OFF -> R.string.kevin_drive_auto_off
+                },
+            ),
+            icon = MobileIcons.Storage,
+            onClick = onNextAutoBackup,
+        )
         val recLine = when (val l = recordingLast) {
             DriveRecordings.Last.None -> stringResource(R.string.kevin_drive_recordings_line)
             is DriveRecordings.Last.Copying -> stringResource(R.string.kevin_drive_rec_copying, l.title, l.percent)
