@@ -688,7 +688,11 @@ private fun OutcomeSheet(outcome: BackupViewModel.Outcome, onDismiss: () -> Unit
                     Text(stringResource(R.string.settings_backup_restore_resync), style = body, color = palette.muted)
                     Text(stringResource(R.string.settings_backup_restore_password_note), style = body, color = palette.muted)
                 }
-                is BackupViewModel.Outcome.Failed -> Text(stringResource(outcome.messageRes), style = body, color = palette.danger)
+                is BackupViewModel.Outcome.Failed -> {
+                    Text(stringResource(outcome.messageRes), style = body, color = palette.danger)
+                    // Kevin's copy: Google's own reason, so a failure can be told apart from a bad connection.
+                    outcome.detail?.let { Text(it, style = body, color = palette.muted) }
+                }
             }
         }
         StageMenuItem(stringResource(R.string.common_ok), onClick = onDismiss, icon = MobileIcons.Check, filled = true)

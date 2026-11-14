@@ -88,6 +88,7 @@
 1	technical	app/src/main/java/tv/own/owntv/mobile/drive/GoogleDrive.kt	Bearer
 1	technical	app/src/main/java/tv/own/owntv/mobile/drive/GoogleDrive.kt	Content-Range
 1	technical	app/src/main/java/tv/own/owntv/mobile/drive/GoogleDrive.kt	Drive $code $reason
+1	technical	app/src/main/java/tv/own/owntv/mobile/drive/GoogleDrive.kt	Drive $code $reason $said
 1	technical	app/src/main/java/tv/own/owntv/mobile/drive/GoogleDrive.kt	KevinDrive
 1	technical	app/src/main/java/tv/own/owntv/mobile/drive/GoogleDrive.kt	KueTV
 1	technical	app/src/main/java/tv/own/owntv/mobile/drive/GoogleDrive.kt	Location
@@ -131,6 +132,7 @@
 1	technical	app/src/main/java/tv/own/owntv/mobile/drive/GoogleDrive.kt	invalid_grant
 1	technical	app/src/main/java/tv/own/owntv/mobile/drive/GoogleDrive.kt	kevin_google_drive
 1	technical	app/src/main/java/tv/own/owntv/mobile/drive/GoogleDrive.kt	limit
+1	technical	app/src/main/java/tv/own/owntv/mobile/drive/GoogleDrive.kt	message
 1	technical	app/src/main/java/tv/own/owntv/mobile/drive/GoogleDrive.kt	mimeType
 1	technical	app/src/main/java/tv/own/owntv/mobile/drive/GoogleDrive.kt	mimeType = '$FOLDER_MIME'
 3	technical	app/src/main/java/tv/own/owntv/mobile/drive/GoogleDrive.kt	name

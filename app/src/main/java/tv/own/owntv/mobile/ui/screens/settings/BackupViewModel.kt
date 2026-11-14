@@ -104,13 +104,13 @@ class BackupViewModel(
     val driveRecordingLast: StateFlow<tv.own.owntv.mobile.drive.DriveRecordings.Last> get() = driveRecordings.last
     fun setRecordingsToDrive(on: Boolean) = driveRecordings.setEnabled(on)
 
-    @StringRes
-    private fun driveFailure(e: Throwable): Int {
+    /** The message for a Drive failure. An unrecognised one also carries Google's own reason. */
+    private fun driveFailure(e: Throwable): Outcome.Failed {
         driveState = driveUi()
         return when ((e as? tv.own.owntv.mobile.drive.GoogleDrive.DriveException)?.kind) {
-            tv.own.owntv.mobile.drive.GoogleDrive.DriveException.Kind.SIGNED_OUT -> R.string.kevin_drive_error_signed_out
-            tv.own.owntv.mobile.drive.GoogleDrive.DriveException.Kind.FULL -> R.string.kevin_drive_error_full
-            null -> R.string.kevin_drive_error
+            tv.own.owntv.mobile.drive.GoogleDrive.DriveException.Kind.SIGNED_OUT -> Outcome.Failed(R.string.kevin_drive_error_signed_out)
+            tv.own.owntv.mobile.drive.GoogleDrive.DriveException.Kind.FULL -> Outcome.Failed(R.string.kevin_drive_error_full)
+            null -> Outcome.Failed(R.string.kevin_drive_error, detail = (e.message ?: e.javaClass.simpleName).take(400))
         }
     }
 
@@ -130,7 +130,7 @@ class BackupViewModel(
                 drive.upload(file, tv.own.owntv.mobile.drive.GoogleDrive.Folder.BACKUPS, file.name, BACKUP_FILE_MIME)
             }.fold(
                 onSuccess = { Outcome.Exported(context.getString(R.string.kevin_drive_backup_place, file.name), passwordsOmitted = password.isNullOrBlank()) },
-                onFailure = { Outcome.Failed(driveFailure(it)) },
+                onFailure = { driveFailure(it) },
             )
             dir.deleteRecursively()
             busy = false
@@ -140,7 +140,7 @@ class BackupViewModel(
     /** The backups on Drive, newest first; null when Drive could not be read (the reason is shown). */
     suspend fun driveBackups(): List<tv.own.owntv.mobile.drive.GoogleDrive.DriveFile>? =
         runCatching { drive.list(tv.own.owntv.mobile.drive.GoogleDrive.Folder.BACKUPS).sortedByDescending { it.createdMs } }
-            .getOrElse { outcome = Outcome.Failed(driveFailure(it)); null }
+            .getOrElse { outcome = driveFailure(it); null }
 
     /** Fetch a backup from Drive, then the normal restore steps. */
     fun restoreFromDrive(file: tv.own.owntv.mobile.drive.GoogleDrive.DriveFile) {
@@ -148,7 +148,7 @@ class BackupViewModel(
         viewModelScope.launch {
             busy = true
             val local = File(File(context.cacheDir, DRIVE_DIR).apply { mkdirs() }, file.name.ifBlank { "backup.own" })
-            val ok = runCatching { drive.download(file.id, local) }.onFailure { outcome = Outcome.Failed(driveFailure(it)) }.isSuccess
+            val ok = runCatching { drive.download(file.id, local) }.onFailure { outcome = driveFailure(it) }.isSuccess
             busy = false
             if (ok) beginRestore(local)
         }
@@ -175,7 +175,7 @@ class BackupViewModel(
     sealed interface Outcome {
         data class Exported(val name: String, val passwordsOmitted: Boolean) : Outcome
         data class Restored(val summary: BackupManager.ImportSummary) : Outcome
-        data class Failed(@param:StringRes val messageRes: Int) : Outcome
+        data class Failed(@param:StringRes val messageRes: Int, val detail: String? = null) : Outcome
     }
 
     /**

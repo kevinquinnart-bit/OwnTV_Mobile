@@ -376,13 +376,14 @@ class GoogleDrive(context: Context, baseClient: OkHttpClient) {
     }
 
     private fun driveError(code: Int, text: String): Exception {
-        val reason = runCatching {
-            JSONObject(text).optJSONObject("error")?.optJSONArray("errors")?.optJSONObject(0)?.optString("reason")
-        }.getOrNull().orEmpty()
+        val error = runCatching { JSONObject(text).optJSONObject("error") }.getOrNull()
+        val reason = error?.optJSONArray("errors")?.optJSONObject(0)?.optString("reason").orEmpty()
+        // Google's own sentence, which for a switched-off service names the page that switches it on.
+        val said = error?.optString("message").orEmpty()
         return when {
             code == 401 -> DriveException(DriveException.Kind.SIGNED_OUT)
             reason == "storageQuotaExceeded" -> DriveException(DriveException.Kind.FULL)
-            else -> IOException("Drive $code $reason")
+            else -> IOException("Drive $code $reason $said".trim())
         }
     }
 

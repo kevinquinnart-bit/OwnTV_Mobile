@@ -37,6 +37,7 @@
 - **🗂️ Downloads and recordings whose file is gone say "File missing"**
 
 ### Fixes
+- **☁️ A Google Drive failure shows Google's own reason under the message**
 - **☁️ Google Drive sign-in no longer stops with "Couldn't reach Google" while Google's page is open**
 - **🔁 Channel versions: a version that will not start moves on, and after the last one it goes back to the best**
 - **📺 Sky Sports NOW TV copies count as versions of the regular channel**
