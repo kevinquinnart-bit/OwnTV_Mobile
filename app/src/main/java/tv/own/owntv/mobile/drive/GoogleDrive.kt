@@ -107,7 +107,11 @@ class GoogleDrive(context: Context, baseClient: OkHttpClient) {
                     else -> Poll.Failed(json.optString("error_description").ifBlank { json.optString("error") })
                 }
             }
-        }.getOrElse { Poll.Failed(it.message ?: it.javaClass.simpleName) }
+        }.getOrElse {
+            // The phone drops this app's connection while Google's page is in front ("Software caused
+            // connection abort"). That is not an answer from Google, so keep waiting and ask again.
+            if (it is IOException) Poll.Waiting else Poll.Failed(it.message ?: it.javaClass.simpleName)
+        }
     }
 
     private fun saveTokens(json: JSONObject) {
